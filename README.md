@@ -487,7 +487,7 @@ node scripts/export.mjs
 node scripts/validate.mjs --links
 ```
 
-The dependency-free exporter reads only anonymous public Pixexid or Alosem pages and APIs. It fails closed on unavailable pages, non-allowlisted hosts, unapproved or unavailable recipes, missing or expired reference previews, flattened prompt layers, mismatched canonical finals, incomplete provenance, unsafe script payloads, or private fields. It never connects to either database, object storage, production credentials, generation, import, or publication surfaces.
+The dependency-free exporter reads only anonymous public Pixexid or Alosem pages and APIs. It allows assets only from the evidenced `pixexid.com`, `pwi.pixexid.com`, `images.pixexid.com`, and `alosem.com` hosts, and fails closed on unavailable pages, any other host, unapproved or unavailable recipes, missing or expired reference previews, flattened prompt layers, mismatched canonical finals, incomplete provenance, unsafe script payloads, or private fields. It never connects to either database, object storage, production credentials, generation, import, or publication surfaces.
 
 ## Rights and safety
 

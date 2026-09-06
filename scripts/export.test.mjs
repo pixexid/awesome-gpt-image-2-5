@@ -142,6 +142,107 @@ function stub(mutate = () => {}, { expireSources = false } = {}) {
   };
 }
 
+const pixSlug = "retained-pixexid-fixture";
+const pixSource = {
+  origin: "pixexid",
+  canonical_url: `https://pixexid.com/i/${pixSlug}`,
+  composition_url:
+    "https://pixexid.com/ai-composition/99999999-9999-4999-8999-999999999999",
+  rights_basis: "Retained Pixexid fixture.",
+};
+
+function pixexidStub(mutate = () => {}) {
+  const prompt = "Create a retained Pixexid fixture.";
+  const input = {
+    id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+    publicImageId: null,
+    title: "Input",
+    description: "Input reference",
+    prompt: null,
+    model: null,
+    kind: "image",
+    width: 512,
+    height: 512,
+    mediaUrl: "https://pixexid.com/api/creative-assets/input/public",
+  };
+  const output = {
+    id: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+    publicImageId: ids.image,
+    title: "Retained output",
+    description: "Retained output",
+    prompt,
+    model: "gpt-image-2",
+    kind: "edit",
+    width: 1024,
+    height: 1024,
+    mediaUrl: "https://pwi.pixexid.com/retained-output.webp",
+  };
+  const record = {
+    id: ids.image,
+    filename: `${pixSlug}.jpg`,
+    approved: true,
+    title: output.title,
+    description: output.description,
+    prompt,
+    aiModel: output.model,
+    width: output.width,
+    height: output.height,
+    createdAt: "2026-09-01T00:00:00.000Z",
+    tags: ["retained"],
+    colors: ["#ccbbaa"],
+    gen_meta: {
+      image_model: { name: output.model },
+      creative: { inputCount: 1, shareInputs: true, kind: "edit" },
+      provenance: {
+        moderation: "approved",
+        storage_key: `${pixSlug}.jpg`,
+        sha256: "a".repeat(64),
+        source_sha256: "b".repeat(64),
+        import_manifest_sha256: "c".repeat(64),
+        generated_on: "openai",
+      },
+      output: { format: "jpeg" },
+      post: {},
+    },
+  };
+  const project = {
+    scenes: [
+      {
+        output: { publicImageId: record.id },
+        steps: [
+          {
+            sceneId: ids.scene,
+            output,
+            inputs: [{ role: "reference", asset: input }],
+          },
+        ],
+      },
+    ],
+  };
+  mutate({ record, project });
+  return async (value) => {
+    const url = new URL(String(value));
+    if (url.pathname === `/api/picture/by-filename/${pixSlug}`)
+      return Response.json(record);
+    if (url.pathname === `/i/${pixSlug}`)
+      return new Response(
+        `<link rel="canonical" href="${pixSource.canonical_url}"><meta property="og:image" content="https://images.pixexid.com/${pixSlug}.jpg">`,
+      );
+    if (url.pathname.startsWith("/ai-composition/"))
+      return new Response(
+        `<script id="__NEXT_DATA__" type="application/json">${JSON.stringify({ props: { pageProps: { project } } })}</script>`,
+      );
+    if (
+      url.hostname === "pixexid.com" ||
+      url.hostname === "pwi.pixexid.com"
+    )
+      return new Response("image", {
+        headers: { "content-type": "image/webp" },
+      });
+    throw new Error(`Unexpected Pixexid fixture request: ${url}`);
+  };
+}
+
 test("exports the Alosem v2 prompt layers, exact history, digests and ordered source URLs", async () => {
   const item = await fetchCase(source, stub());
   assert.equal(item.origin, "alosem");
@@ -157,6 +258,45 @@ test("exports the Alosem v2 prompt layers, exact history, digests and ordered so
   const page = caseMarkdown(item);
   assert.ok(page.includes("Standalone interpretation · adapted creation prompt"));
   assert.ok(page.indexOf(item.references[0].image_url) < page.indexOf('width="760"'));
+});
+
+test("checks retained Pixexid export privacy while allowing provenance storage_key", async (t) => {
+  const item = await fetchCase(pixSource, pixexidStub());
+  assert.equal(item.provenance.storage_key, `${pixSlug}.jpg`);
+  await t.test("public image record", async () => {
+    await assert.rejects(
+      fetchCase(
+        pixSource,
+        pixexidStub(({ record }) => {
+          record.ownerId = "private-owner";
+        }),
+      ),
+      /Private field in public response/,
+    );
+  });
+  await t.test("composition projection", async () => {
+    await assert.rejects(
+      fetchCase(
+        pixSource,
+        pixexidStub(({ project }) => {
+          project.scenes[0].owner_id = "private-owner";
+        }),
+      ),
+      /Private field in public response/,
+    );
+  });
+  await t.test("asset host", async () => {
+    await assert.rejects(
+      fetchCase(
+        pixSource,
+        pixexidStub(({ project }) => {
+          project.scenes[0].steps[0].output.mediaUrl =
+            "https://evil.example/output.webp";
+        }),
+      ),
+      /Invalid Pixexid asset URL/,
+    );
+  });
 });
 
 test("refuses a flattened public prompt", async () => {

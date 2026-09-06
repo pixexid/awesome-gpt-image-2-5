@@ -12,7 +12,14 @@ const origins = {
   pixexid: { host: "pixexid.com", compositionPath: "/ai-composition/" },
   alosem: { host: "alosem.com", compositionPath: "/ai-composition/" },
 };
-const privateKey =
+const pixexidAssetHosts = new Set([
+  "pixexid.com",
+  "pwi.pixexid.com",
+  "images.pixexid.com",
+]);
+const pixexidPrivateKey =
+  /^(?:user|owner|email|avatar|secret|token|cookie|authorization)(?:_?id)?$/i;
+const alosemPrivateKey =
   /^(?:owner|private|storage)|^(?:user(?:_?id)?|email|avatar|secret|token|cookie|authorization)$/i;
 
 const fail = (message) => {
@@ -27,23 +34,23 @@ const htmlEscape = (value) =>
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;");
 
-function inspectPublicJson(value, path = "response", checkPrivate = true) {
+function inspectPublicJson(value, path = "response", forbidden = alosemPrivateKey) {
   if (typeof value === "string") {
     if (/<\/script\s*>/i.test(value)) fail(`Unsafe </script> payload at ${path}`);
     return;
   }
   if (!value || typeof value !== "object") return;
   for (const [key, child] of Object.entries(value)) {
-    if (checkPrivate && privateKey.test(key))
+    if (forbidden?.test(key))
       fail(`Private field in public response: ${path}.${key}`);
-    inspectPublicJson(child, `${path}.${key}`, checkPrivate);
+    inspectPublicJson(child, `${path}.${key}`, forbidden);
   }
 }
 
-async function responseJson(response, unavailable, checkPrivate = true) {
+async function responseJson(response, unavailable, forbidden = alosemPrivateKey) {
   if (!response.ok) fail(unavailable);
   const value = JSON.parse(await response.text());
-  inspectPublicJson(value, "response", checkPrivate);
+  inspectPublicJson(value, "response", forbidden);
   return value;
 }
 
@@ -81,6 +88,13 @@ async function fetchImage(fetchImpl, url, message, alosem = false) {
   }
 }
 
+function pixexidAssetUrl(value, base, slug) {
+  const url = new URL(value, base);
+  if (url.protocol !== "https:" || !pixexidAssetHosts.has(url.hostname))
+    fail(`Invalid Pixexid asset URL for ${slug}: ${url}`);
+  return url.href;
+}
+
 async function fetchPixexidCase(source, fetchImpl) {
   const { canonical, composition } = sourceUrls(source);
   if (composition.search) fail(`Invalid pixexid composition URL: ${composition}`);
@@ -94,7 +108,7 @@ async function fetchPixexidCase(source, fetchImpl) {
   const record = await responseJson(
     apiResponse,
     `Public source unavailable for ${slug}`,
-    false,
+    pixexidPrivateKey,
   );
   if (!pageResponse.ok || !projectResponse.ok)
     fail(`Public source unavailable for ${slug}`);
@@ -108,12 +122,13 @@ async function fetchPixexidCase(source, fetchImpl) {
   if (!match) fail(`Public composition data missing: ${composition}`);
   const project = JSON.parse(match[1]).props?.pageProps?.project;
   if (!project) fail(`Public composition data missing: ${composition}`);
-  inspectPublicJson(project, "composition", false);
+  inspectPublicJson(project, "composition", pixexidPrivateKey);
 
   const canonicalMatch = html.match(/<link rel="canonical" href="([^"]+)"/);
   const imageMatch = html.match(/<meta property="og:image" content="([^"]+)"/);
   if (canonicalMatch?.[1] !== source.canonical_url || !imageMatch)
     fail(`Public page metadata mismatch for ${slug}`);
+  const finalImageUrl = pixexidAssetUrl(imageMatch[1], canonical, slug);
   if (
     !uuid.test(record.id) ||
     record.approved !== true ||
@@ -137,7 +152,7 @@ async function fetchPixexidCase(source, fetchImpl) {
     fail(`Incomplete public recipe for ${slug}`);
 
   const publicAsset = async (asset, role, index, output = false) => {
-    const imageUrl = new URL(asset.mediaUrl, composition).href;
+    const imageUrl = pixexidAssetUrl(asset.mediaUrl, composition, slug);
     await fetchImage(
       fetchImpl,
       imageUrl,
@@ -205,7 +220,7 @@ async function fetchPixexidCase(source, fetchImpl) {
     dimensions: { width: record.width, height: record.height },
     created_at: record.createdAt,
     canonical_url: canonicalMatch[1],
-    image_url: imageMatch[1],
+    image_url: finalImageUrl,
     composition_url: source.composition_url,
     references: steps.at(-1).references,
     steps,
@@ -569,7 +584,7 @@ node scripts/export.mjs
 node scripts/validate.mjs --links
 \`\`\`
 
-The dependency-free exporter reads only anonymous public Pixexid or Alosem pages and APIs. It fails closed on unavailable pages, non-allowlisted hosts, unapproved or unavailable recipes, missing or expired reference previews, flattened prompt layers, mismatched canonical finals, incomplete provenance, unsafe script payloads, or private fields. It never connects to either database, object storage, production credentials, generation, import, or publication surfaces.
+The dependency-free exporter reads only anonymous public Pixexid or Alosem pages and APIs. It allows assets only from the evidenced \`pixexid.com\`, \`pwi.pixexid.com\`, \`images.pixexid.com\`, and \`alosem.com\` hosts, and fails closed on unavailable pages, any other host, unapproved or unavailable recipes, missing or expired reference previews, flattened prompt layers, mismatched canonical finals, incomplete provenance, unsafe script payloads, or private fields. It never connects to either database, object storage, production credentials, generation, import, or publication surfaces.
 
 ## Rights and safety
 

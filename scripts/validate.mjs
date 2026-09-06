@@ -15,19 +15,31 @@ const readme = await readFile(join(root, "README.md"), "utf8");
 const uuid =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const sha256 = /^[0-9a-f]{64}$/;
-const allowedHosts = new Set(["pixexid.com", "images.pixexid.com", "alosem.com"]);
-const forbiddenKeys =
+const allowedHosts = new Set([
+  "pixexid.com",
+  "pwi.pixexid.com",
+  "images.pixexid.com",
+  "alosem.com",
+]);
+const pixexidAssetHosts = new Set([
+  "pixexid.com",
+  "pwi.pixexid.com",
+  "images.pixexid.com",
+]);
+const pixexidPrivateKey =
+  /^(?:user|owner|email|avatar|secret|token|cookie|authorization)(?:_?id)?$/i;
+const alosemPrivateKey =
   /^(?:owner|private|storage)|^(?:user(?:_?id)?|email|avatar|secret|token|cookie|authorization)$/i;
 
 const assert = (condition, message) => {
   if (!condition) throw new Error(message);
 };
 
-function checkKeys(value, path = "case") {
+function checkKeys(value, forbidden, path = "case") {
   if (!value || typeof value !== "object") return;
   for (const [key, child] of Object.entries(value)) {
-    assert(!forbiddenKeys.test(key), `Private field ${path}.${key}`);
-    checkKeys(child, `${path}.${key}`);
+    assert(!forbidden.test(key), `Private field ${path}.${key}`);
+    checkKeys(child, forbidden, `${path}.${key}`);
   }
 }
 
@@ -73,6 +85,7 @@ function checkShared(item) {
 }
 
 function checkPixexid(item) {
+  checkKeys(item, pixexidPrivateKey);
   assert(item.prompt, `Missing v1 prompt: ${item.id}`);
   assert(item.model === item.model_metadata.name, `Model mismatch: ${item.id}`);
   assert(
@@ -91,6 +104,20 @@ function checkPixexid(item) {
   for (const key of ["canonical_url", "composition_url", "source_api"])
     assert(new URL(item[key]).hostname === "pixexid.com", `Invalid ${key}: ${item.id}`);
   assert(new URL(item.image_url).hostname === "images.pixexid.com", `Invalid image URL: ${item.id}`);
+  for (const [kind, value] of [
+    ["final", item.image_url],
+    ...item.references.map((reference) => ["top-level reference", reference.image_url]),
+    ...item.steps.flatMap((step) => [
+      ["step output", step.output.image_url],
+      ...step.references.map((reference) => ["step reference", reference.image_url]),
+    ]),
+  ]) {
+    const url = new URL(value);
+    assert(
+      url.protocol === "https:" && pixexidAssetHosts.has(url.hostname),
+      `Invalid Pixexid ${kind} URL: ${item.id}`,
+    );
+  }
   for (const step of item.steps) {
     assert(step.prompt, `Missing v1 step prompt: ${item.id}`);
     assert(uuid.test(step.output.id), `Invalid step output: ${item.id}`);
@@ -100,7 +127,7 @@ function checkPixexid(item) {
 }
 
 function checkAlosem(item) {
-  checkKeys(item);
+  checkKeys(item, alosemPrivateKey);
   assert(
     item.prompt_kind === "standalone-interpretation" &&
       item.standalone_prompt &&
@@ -175,11 +202,15 @@ assert(
   "README positioning missing",
 );
 
-for (const item of catalog.cases) {
+export function validateCase(item) {
   assert(item.origin === "pixexid" || item.origin === "alosem", `Invalid origin: ${item.id}`);
   checkShared(item);
   if (item.origin === "pixexid") checkPixexid(item);
   else checkAlosem(item);
+}
+
+for (const item of catalog.cases) {
+  validateCase(item);
 
   const casePath = join(root, "cases", `${item.slug}.md`);
   await access(casePath);
