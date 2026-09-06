@@ -3,7 +3,7 @@
 <p align="center"><strong>AI Image Compositions built from ordered visual references, exact prompts, and public recipes.</strong></p>
 
 <p align="center">
-  See how <a href="https://pixexid.com">Pixexid</a> turns identity, character, product, logo, style, and other visual references into reproducible final artwork.
+  See how <a href="https://pixexid.com">Pixexid</a> and <a href="https://alosem.com">Alosem</a> expose reproducible artwork built from identity, character, product, logo, style, and other visual references.
 </p>
 
 <p align="center">
@@ -472,27 +472,27 @@ Build the pavilion from a few monumental folded-paper arches and low terraces in
 
 ## Use the structured data
 
-Each case includes its ordered references, exact public prompt, model, dimensions, tags, palette, recipe metadata, and SHA-256 provenance in [`data/cases.json`](data/cases.json). The schema is [`schema/cases.schema.json`](schema/cases.schema.json).
+Each case includes its ordered references, public and exact prompt fields, model, dimensions, tags, palette, recipe metadata, and provenance in [`data/cases.json`](data/cases.json). Pixexid v1 records remain intact; Alosem records use the v2 two-layer prompt and digest provenance shape. The schema is [`schema/cases.schema.json`](schema/cases.schema.json).
 
 ```sh
-node -e 'const a=require("./data/cases.json"); console.log(a.cases.map(({title,references,prompt})=>({title,references:references.map(r=>r.role),prompt})))'
+node -e 'const a=require("./data/cases.json"); console.log(a.cases.map(({title,origin,references})=>({title,origin,references:references.map(r=>r.role)})))'
 ```
 
-## Refresh from Pixexid
+## Refresh from Pixexid or Alosem
 
-The export is allowlisted: adding a case requires an explicit public Pixexid URL and a reviewed rights basis in [`data/sources.json`](data/sources.json).
+The export is allowlisted: adding a case requires an explicit public source origin, canonical image URL, composition URL, and reviewed rights basis in [`data/sources.json`](data/sources.json).
 
 ```sh
 node scripts/export.mjs
 node scripts/validate.mjs --links
 ```
 
-The dependency-free exporter reads only anonymous public Pixexid pages and APIs. It fails closed on unavailable pages, non-Pixexid hosts, unapproved moderation, missing reference previews, private recipes, mismatched input order, or incomplete provenance. It never connects to Pixexid's database or production credentials.
+The dependency-free exporter reads only anonymous public Pixexid or Alosem pages and APIs. It fails closed on unavailable pages, non-allowlisted hosts, unapproved or unavailable recipes, missing or expired reference previews, flattened prompt layers, mismatched canonical finals, incomplete provenance, unsafe script payloads, or private fields. It never connects to either database, object storage, production credentials, generation, import, or publication surfaces.
 
 ## Rights and safety
 
 This atlas contains only Pixexid-admin-owned, original AI Image Compositions with public source sharing enabled. It excludes private user records, private masters, third-party source files, real-person identity material, secrets, and work with unclear rights.
 
-Catalog text and structured data are [CC BY 4.0](LICENSE); scripts are [MIT](LICENSE-CODE). Linked images remain hosted by Pixexid and are not relicensed by this repository. See the [rights scope](RIGHTS.md) and [contribution policy](CONTRIBUTING.md).
+Catalog text and structured data are [CC BY 4.0](LICENSE); scripts are [MIT](LICENSE-CODE). Linked images remain remotely hosted and are not relicensed by this repository. See the [rights scope](RIGHTS.md) and [contribution policy](CONTRIBUTING.md).
 
-Create and explore more [AI Image Compositions on Pixexid](https://pixexid.com).
+Create and explore more on [Pixexid](https://pixexid.com) and [Alosem](https://alosem.com).
