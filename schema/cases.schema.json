@@ -5,95 +5,176 @@
   "type": "object",
   "required": ["schema_version", "cases"],
   "properties": {
-    "schema_version": { "const": 1 },
+    "schema_version": { "const": 2 },
     "cases": {
       "type": "array",
       "minItems": 1,
       "items": {
-        "type": "object",
-        "required": [
-          "id",
-          "slug",
-          "title",
-          "description",
-          "prompt",
-          "model",
-          "model_metadata",
-          "tags",
-          "colors",
-          "dimensions",
-          "created_at",
-          "canonical_url",
-          "image_url",
-          "composition_url",
-          "references",
-          "steps",
-          "stage_count",
-          "recipe",
-          "provenance",
-          "output",
-          "post_processing",
-          "rights",
-          "source_api"
-        ],
-        "properties": {
-          "id": { "type": "string", "format": "uuid" },
-          "slug": { "type": "string", "minLength": 1 },
-          "title": { "type": "string", "minLength": 1 },
-          "description": { "type": "string", "minLength": 1 },
-          "prompt": { "type": "string", "minLength": 1 },
-          "model": { "type": "string", "minLength": 1 },
-          "canonical_url": { "type": "string", "format": "uri" },
-          "image_url": { "type": "string", "format": "uri" },
-          "composition_url": { "type": "string", "format": "uri" },
-          "references": {
-            "type": "array",
-            "minItems": 1,
-            "items": {
+        "oneOf": [
+          { "$ref": "#/$defs/pixexidCase" },
+          { "$ref": "#/$defs/alosemCase" }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "dimensions": {
+      "type": "object",
+      "required": ["width", "height"],
+      "properties": {
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "asset": {
+      "type": "object",
+      "required": ["order", "role", "id", "title", "dimensions", "image_url"],
+      "properties": {
+        "order": { "type": "integer", "minimum": 1 },
+        "role": { "type": "string", "minLength": 1 },
+        "id": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "dimensions": { "$ref": "#/$defs/dimensions" },
+        "image_url": { "type": "string", "format": "uri" }
+      }
+    },
+    "sharedCase": {
+      "type": "object",
+      "required": [
+        "origin",
+        "id",
+        "slug",
+        "title",
+        "description",
+        "model",
+        "tags",
+        "colors",
+        "dimensions",
+        "created_at",
+        "canonical_url",
+        "image_url",
+        "composition_url",
+        "references",
+        "steps",
+        "stage_count",
+        "recipe",
+        "provenance",
+        "output",
+        "rights",
+        "source_api"
+      ],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "slug": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "model": { "type": "string", "minLength": 1 },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "colors": { "type": "array", "items": { "type": "string" } },
+        "dimensions": { "$ref": "#/$defs/dimensions" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "canonical_url": { "type": "string", "format": "uri" },
+        "image_url": { "type": "string", "format": "uri" },
+        "composition_url": { "type": "string", "format": "uri" },
+        "references": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/asset" }
+        },
+        "steps": { "type": "array", "minItems": 1 },
+        "stage_count": { "type": "integer", "minimum": 1 },
+        "source_api": { "type": "string", "format": "uri" }
+      }
+    },
+    "pixexidCase": {
+      "allOf": [
+        { "$ref": "#/$defs/sharedCase" },
+        {
+          "required": ["prompt", "model_metadata", "post_processing"],
+          "properties": {
+            "origin": { "const": "pixexid" },
+            "prompt": { "type": "string", "minLength": 1 }
+          }
+        }
+      ]
+    },
+    "alosemCase": {
+      "allOf": [
+        { "$ref": "#/$defs/sharedCase" },
+        {
+          "required": ["standalone_prompt", "prompt_kind", "exact_prompt"],
+          "properties": {
+            "origin": { "const": "alosem" },
+            "standalone_prompt": { "type": "string", "minLength": 1 },
+            "prompt_kind": { "const": "standalone-interpretation" },
+            "exact_prompt": { "type": "string", "minLength": 1 },
+            "steps": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "order",
+                  "scene_id",
+                  "stage",
+                  "revision",
+                  "label",
+                  "title",
+                  "exact_prompt",
+                  "model",
+                  "revision_of",
+                  "output",
+                  "references"
+                ],
+                "properties": {
+                  "order": { "type": "integer", "minimum": 1 },
+                  "exact_prompt": { "type": "string", "minLength": 1 },
+                  "model": { "type": "string", "minLength": 1 },
+                  "output": { "$ref": "#/$defs/asset" },
+                  "references": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "$ref": "#/$defs/asset" }
+                  }
+                }
+              }
+            },
+            "recipe": {
               "type": "object",
               "required": [
-                "order",
-                "role",
-                "id",
-                "title",
-                "description",
-                "prompt",
-                "model",
-                "kind",
-                "dimensions",
-                "image_url"
+                "available",
+                "compositionId",
+                "sceneId",
+                "publicationId",
+                "publicationEpoch",
+                "inputCount"
               ],
               "properties": {
-                "order": { "type": "integer", "minimum": 1 },
-                "role": { "type": "string", "minLength": 1 },
-                "id": { "type": "string", "format": "uuid" },
-                "title": { "type": "string", "minLength": 1 },
-                "image_url": { "type": "string", "format": "uri" }
+                "available": { "const": true },
+                "compositionId": { "type": "string", "format": "uuid" },
+                "sceneId": { "type": "string", "format": "uuid" },
+                "publicationId": { "type": "string", "format": "uuid" },
+                "publicationEpoch": { "type": "integer", "minimum": 1 },
+                "inputCount": { "type": "integer", "minimum": 1 }
+              }
+            },
+            "provenance": {
+              "type": "object",
+              "required": ["graphDigest", "snapshotDigest"],
+              "properties": {
+                "graphDigest": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "snapshotDigest": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
               }
             }
-          },
-          "steps": {
-            "type": "array",
-            "minItems": 1,
-            "items": {
-              "type": "object",
-              "required": [
-                "order",
-                "scene_id",
-                "stage",
-                "revision",
-                "label",
-                "title",
-                "prompt",
-                "output",
-                "references"
-              ]
-            }
-          },
-          "stage_count": { "type": "integer", "minimum": 1 },
-          "source_api": { "type": "string", "format": "uri" }
+          }
         }
-      }
+      ]
     }
   }
 }
