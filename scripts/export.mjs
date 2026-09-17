@@ -1,622 +1,409 @@
 #!/usr/bin/env node
 
-import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { basename, dirname, join, resolve } from "node:path";
+import { mkdir, readFile, readdir, unlink, writeFile } from "node:fs/promises";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
+const api = "https://alosem.com/api/images/";
+const assetHosts = new Set(["alosem.com", "pi.alosem.com"]);
+const provenanceStatement =
+  "Generated with built-in imagegen. Listed under the GPT Image 2.5 family; the exact backend variant was not exposed.";
+const teamLabel =
+  "This team-generated campaign case was produced directly by the Alosem team with built-in imagegen from founder-provided identity sheets; it is neither externally published nor created through the Alosem creative product, so it is labeled **Created for Alosem**.";
+const categories = [
+  ["product_visuals", "Product visuals"],
+  ["posters_typography", "Posters & typography"],
+  ["transparent_assets", "Transparent assets"],
+  ["character_identity", "Character identity"],
+  ["illustration_backgrounds", "Illustration & backgrounds"],
+  ["focused_edits", "Focused edits"],
+];
+const openingSlugs = [
+  "cream-terminal-that-never-existed-b3d4a9d3",
+  "glow-retro-poster-of-a-bass-player-and-boy-6b2eb59a",
+  "pressed-flower-wren-on-twig-slice-4712aff7",
+  "canal-bridge-screenprint-slice-1919a777",
+  "girl-holding-a-fallen-moon-in-a-tidal-pool-65b8e726",
+  "ancient-sword-bridges-a-canyon-of-pages-0a39debe",
+];
+const workedSlug = "glow-retro-poster-of-a-bass-player-and-boy-6b2eb59a";
 const uuid =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-const sha256 = /^[0-9a-f]{64}$/;
-const origins = {
-  pixexid: { host: "pixexid.com", compositionPath: "/ai-composition/" },
-  alosem: { host: "alosem.com", compositionPath: "/ai-composition/" },
-};
-const pixexidAssetHosts = new Set([
-  "pixexid.com",
-  "pwi.pixexid.com",
-  "images.pixexid.com",
-]);
-const pixexidPrivateKey =
-  /^(?:user|owner|email|avatar|secret|token|cookie|authorization)(?:_?id)?$/i;
-const alosemPrivateKey =
-  /^(?:owner|private|storage)|^(?:user(?:_?id)?|email|avatar|secret|token|cookie|authorization)$/i;
 
 const fail = (message) => {
   throw new Error(message);
 };
-const markdownEscape = (value) => String(value).replaceAll("|", "\\|");
-const roleLabel = (value) => `${value[0].toUpperCase()}${value.slice(1)}`;
-const htmlEscape = (value) =>
+
+const escapeHtml = (value) =>
   String(value)
     .replaceAll("&", "&amp;")
-    .replaceAll('"', "&quot;")
     .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;");
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
 
-function inspectPublicJson(value, path = "response", forbidden = alosemPrivateKey) {
-  if (typeof value === "string") {
-    if (/<\/script\s*>/i.test(value)) fail(`Unsafe </script> payload at ${path}`);
-    return;
-  }
-  if (!value || typeof value !== "object") return;
-  for (const [key, child] of Object.entries(value)) {
-    if (forbidden?.test(key))
-      fail(`Private field in public response: ${path}.${key}`);
-    inspectPublicJson(child, `${path}.${key}`, forbidden);
-  }
+function checkedUrl(value, expectedHost, label) {
+  const url = new URL(value);
+  if (url.protocol !== "https:" || !assetHosts.has(url.hostname))
+    fail("Invalid Alosem " + label + " URL: " + value);
+  if (expectedHost && url.hostname !== expectedHost)
+    fail("Unexpected host for " + label + ": " + value);
+  return url.toString();
 }
 
-async function responseJson(response, unavailable, forbidden = alosemPrivateKey) {
-  if (!response.ok) fail(unavailable);
-  const value = JSON.parse(await response.text());
-  inspectPublicJson(value, "response", forbidden);
-  return value;
-}
-
-function sourceUrls(source) {
-  const config = origins[source.origin];
-  if (!config) fail(`Unsupported source origin: ${source.origin}`);
-  const canonical = new URL(source.canonical_url);
-  const composition = new URL(source.composition_url);
-  if (
-    canonical.protocol !== "https:" ||
-    composition.protocol !== "https:" ||
-    canonical.hostname !== config.host ||
-    composition.hostname !== config.host ||
-    !/^\/i\/[^/]+$/.test(canonical.pathname) ||
-    canonical.search ||
-    canonical.hash ||
-    !composition.pathname.startsWith(config.compositionPath) ||
-    composition.hash
-  )
-    fail(`Invalid ${source.origin} source URL: ${canonical}`);
-  return { canonical, composition };
-}
-
-async function fetchImage(fetchImpl, url, message, alosem = false) {
-  const response = await fetchImpl(url);
-  if (
-    !response.ok ||
-    !response.headers.get("content-type")?.startsWith("image/")
-  )
-    fail(message);
-  if (alosem) {
-    const cache = response.headers.get("cache-control")?.toLowerCase() ?? "";
-    if (!cache.includes("private") || !cache.includes("no-store"))
-      fail(`Alosem source is not epoch-scoped: ${url}`);
-  }
-}
-
-function pixexidAssetUrl(value, base, slug) {
-  const url = new URL(value, base);
-  if (url.protocol !== "https:" || !pixexidAssetHosts.has(url.hostname))
-    fail(`Invalid Pixexid asset URL for ${slug}: ${url}`);
-  return url.href;
-}
-
-async function fetchPixexidCase(source, fetchImpl) {
-  const { canonical, composition } = sourceUrls(source);
-  if (composition.search) fail(`Invalid pixexid composition URL: ${composition}`);
-  const slug = basename(canonical.pathname);
-  const apiUrl = `https://pixexid.com/api/picture/by-filename/${encodeURIComponent(slug)}`;
-  const [apiResponse, pageResponse, projectResponse] = await Promise.all([
-    fetchImpl(apiUrl),
-    fetchImpl(canonical),
-    fetchImpl(composition),
-  ]);
-  const record = await responseJson(
-    apiResponse,
-    `Public source unavailable for ${slug}`,
-    pixexidPrivateKey,
-  );
-  if (!pageResponse.ok || !projectResponse.ok)
-    fail(`Public source unavailable for ${slug}`);
-  const [html, projectHtml] = await Promise.all([
-    pageResponse.text(),
-    projectResponse.text(),
-  ]);
-  const match = projectHtml.match(
-    /<script id="__NEXT_DATA__" type="application\/json">([\s\S]*?)<\/script>/,
-  );
-  if (!match) fail(`Public composition data missing: ${composition}`);
-  const project = JSON.parse(match[1]).props?.pageProps?.project;
-  if (!project) fail(`Public composition data missing: ${composition}`);
-  inspectPublicJson(project, "composition", pixexidPrivateKey);
-
-  const canonicalMatch = html.match(/<link rel="canonical" href="([^"]+)"/);
-  const imageMatch = html.match(/<meta property="og:image" content="([^"]+)"/);
-  if (canonicalMatch?.[1] !== source.canonical_url || !imageMatch)
-    fail(`Public page metadata mismatch for ${slug}`);
-  const finalImageUrl = pixexidAssetUrl(imageMatch[1], canonical, slug);
-  if (
-    !uuid.test(record.id) ||
-    record.approved !== true ||
-    !record.prompt ||
-    !record.aiModel
-  )
-    fail(`Incomplete or unapproved public record for ${slug}`);
-  if (record.gen_meta?.provenance?.moderation !== "approved")
-    fail(`Public provenance is not approved for ${slug}`);
-
-  const scene = project.scenes?.find(
-    (item) => item.output?.publicImageId === record.id,
-  );
-  const finalStep = scene?.steps?.at(-1);
-  if (
-    !finalStep ||
-    finalStep.output?.prompt !== record.prompt ||
-    finalStep.inputs?.length !== record.gen_meta.creative.inputCount ||
-    finalStep.inputs.some((input) => !input.asset)
-  )
-    fail(`Incomplete public recipe for ${slug}`);
-
-  const publicAsset = async (asset, role, index, output = false) => {
-    const imageUrl = pixexidAssetUrl(asset.mediaUrl, composition, slug);
-    await fetchImage(
-      fetchImpl,
-      imageUrl,
-      `Public ${output ? "output" : "reference"} ${index + 1} unavailable for ${slug}`,
-    );
-    return {
-      order: index + 1,
-      role,
-      id: asset.id,
-      public_image_id: asset.publicImageId,
-      title: asset.title,
-      description: asset.description,
-      prompt: asset.prompt,
-      model: asset.model,
-      kind: asset.kind,
-      dimensions: { width: asset.width, height: asset.height },
-      image_url: imageUrl,
-    };
-  };
-  const rawSteps = await Promise.all(
-    scene.steps.map(async (item, index) => ({
-      order: index + 1,
-      scene_id: item.sceneId,
-      title: item.output.title,
-      prompt: item.output.prompt,
-      output: await publicAsset(item.output, "output", index, true),
-      references: await Promise.all(
-        item.inputs.map(({ role, asset }, inputIndex) =>
-          publicAsset(asset, role, inputIndex),
-        ),
-      ),
-    })),
-  );
-  const stageIds = [...new Set(rawSteps.map((item) => item.scene_id))];
-  const stageTotals = new Map(
-    stageIds.map((id) => [
-      id,
-      rawSteps.filter((item) => item.scene_id === id).length,
-    ]),
-  );
-  const stageRevisions = new Map();
-  const steps = rawSteps.map((item) => {
-    const stage = stageIds.indexOf(item.scene_id) + 1;
-    const revision = (stageRevisions.get(item.scene_id) || 0) + 1;
-    stageRevisions.set(item.scene_id, revision);
-    return {
-      ...item,
-      stage,
-      revision,
-      label: `Step ${stage}${stageTotals.get(item.scene_id) > 1 ? ` · Revision ${revision}` : ""}`,
-    };
+export async function fetchCase(source, fetchImpl = fetch) {
+  const response = await fetchImpl(api + encodeURIComponent(source.slug), {
+    signal: AbortSignal.timeout(15_000),
   });
+  if (!response.ok) fail("Alosem image unavailable (" + response.status + "): " + source.slug);
 
-  return {
-    origin: "pixexid",
-    id: record.id,
-    slug: record.filename.replace(/\.(jpe?g|png|webp|avif)$/i, ""),
-    title: record.title,
-    description: record.description,
-    prompt: record.prompt,
-    model: record.aiModel,
-    model_metadata: record.gen_meta.image_model,
-    tags: record.tags,
-    colors: record.colors,
-    dimensions: { width: record.width, height: record.height },
-    created_at: record.createdAt,
-    canonical_url: canonicalMatch[1],
-    image_url: finalImageUrl,
-    composition_url: source.composition_url,
-    references: steps.at(-1).references,
-    steps,
-    stage_count: stageIds.length,
-    recipe: record.gen_meta.creative,
-    provenance: record.gen_meta.provenance,
-    output: record.gen_meta.output,
-    post_processing: record.gen_meta.post,
-    rights: {
-      attribution: "Pixexid",
-      basis: source.rights_basis,
-      linked_image_license:
-        "Excluded from this repository's CC BY 4.0 catalog license; see Pixexid Terms.",
-    },
-    source_api: apiUrl,
-  };
-}
-
-function alosemSourceUrl(asset, composition, projection) {
-  const url = new URL(asset.previewUrl, composition);
-  const expectedPath = `/api/compositions/${projection.compositionId}/sources/${asset.id}`;
+  const record = await response.json();
   if (
-    url.protocol !== "https:" ||
-    url.hostname !== "alosem.com" ||
-    url.pathname !== expectedPath ||
-    url.searchParams.get("scene") !== projection.sceneId ||
-    url.searchParams.get("publication") !== projection.publicationId ||
-    url.searchParams.get("epoch") !== String(projection.publicationEpoch) ||
-    url.searchParams.size !== 3
-  )
-    fail(`Invalid epoch-scoped Alosem source URL: ${url}`);
-  return url.href;
-}
-
-async function fetchAlosemCase(source, fetchImpl) {
-  const { canonical, composition } = sourceUrls(source);
-  const slug = basename(canonical.pathname);
-  const compositionId = basename(composition.pathname);
-  const sceneId = composition.searchParams.get("scene");
-  if (
-    !uuid.test(compositionId) ||
-    !uuid.test(sceneId ?? "") ||
-    composition.searchParams.size !== 1
-  )
-    fail(`Alosem composition and scene ids are required: ${composition}`);
-  const apiUrl = new URL(`/api/images/${encodeURIComponent(slug)}`, canonical);
-  const recipeUrl = new URL(`/api/compositions/${compositionId}/recipe`, composition);
-  recipeUrl.searchParams.set("scene", sceneId);
-  recipeUrl.searchParams.set("export", "true");
-
-  const [apiResponse, pageResponse, recipeResponse] = await Promise.all([
-    fetchImpl(apiUrl),
-    fetchImpl(canonical),
-    fetchImpl(recipeUrl),
-  ]);
-  const [record, projection] = await Promise.all([
-    responseJson(apiResponse, `Public source unavailable for ${slug}`),
-    responseJson(recipeResponse, `Public recipe unavailable for ${slug}`),
-  ]);
-  if (!pageResponse.ok) fail(`Public source unavailable for ${slug}`);
-  const html = await pageResponse.text();
-  const canonicalMatch = html.match(/<link rel="canonical" href="([^"]+)"/);
-  const imageMatch = html.match(/<meta property="og:image" content="([^"]+)"/);
-  const imageUrl = new URL(record.imageUrl, canonical).href;
-  if (
-    canonicalMatch?.[1] !== source.canonical_url ||
-    imageMatch?.[1] !== imageUrl
-  )
-    fail(`Public page metadata mismatch for ${slug}`);
-  if (
+    record.slug !== source.slug ||
     !uuid.test(record.id) ||
-    record.slug !== slug ||
     record.status !== "published" ||
-    !record.prompt ||
-    record.promptKind !== "standalone-interpretation" ||
-    !record.exactPrompt ||
-    !record.model
+    record.model !== "GPT Image 2.5" ||
+    !record.exactPrompt?.trim() ||
+    record.exactPrompt !== record.prompt
   )
-    fail(`Incomplete Alosem public record for ${slug}`);
-  if (
-    projection.version !== 1 ||
-    projection.compositionId !== compositionId ||
-    projection.sceneId !== sceneId ||
-    !uuid.test(projection.publicationId) ||
-    !Number.isInteger(projection.publicationEpoch) ||
-    projection.recipe?.available !== true ||
-    !sha256.test(projection.recipe.graphDigest) ||
-    !sha256.test(projection.recipe.snapshotDigest) ||
-    !Array.isArray(projection.recipe.steps) ||
-    projection.recipe.steps.length === 0
-  )
-    fail(`Incomplete Alosem recipe for ${slug}`);
-  const projectedImageUrl = new URL(projection.image?.mediaUrl ?? "", composition).href;
-  if (
-    projection.image?.id !== record.id ||
-    projection.image?.slug !== slug ||
-    new URL(projection.image?.url ?? "", composition).href !== canonical.href ||
-    projectedImageUrl !== imageUrl ||
-    projection.image?.title !== record.title ||
-    projection.image?.width !== record.width ||
-    projection.image?.height !== record.height
-  )
-    fail(`Canonical final mismatch for ${slug}`);
-  const lastStep = projection.recipe.steps.at(-1);
-  if (
-    record.prompt !== projection.image.standalonePrompt ||
-    projection.image.promptKind !== "standalone-interpretation" ||
-    record.exactPrompt !== lastStep.exactPrompt ||
-    record.model !== lastStep.model
-  )
-    fail(`Prompt or model history mismatch for ${slug}`);
-  if (record.prompt === record.exactPrompt)
-    fail(`Flattened public and exact prompt for ${slug}`);
+    fail("Invalid campaign source: " + source.slug);
 
-  const asset = async (item, role, index, output = false) => {
-    const imageUrl = alosemSourceUrl(item, composition, projection);
-    await fetchImage(
-      fetchImpl,
-      imageUrl,
-      `Public ${output ? "output" : "reference"} ${index + 1} unavailable for ${slug}`,
-      true,
-    );
-    return {
-      order: index + 1,
-      role,
-      id: item.id,
-      title: item.title,
-      description: item.alt,
-      kind: item.detail?.kind ?? "image",
-      dimensions: { width: item.width, height: item.height },
-      image_url: imageUrl,
-    };
+  const responsive = record.responsiveSources.map((item) => item.url);
+  const imageUrls = {
+    512: checkedUrl(
+      responsive.find((url) => url.endsWith("/512.webp")),
+      "pi.alosem.com",
+      "512 image",
+    ),
+    1024: checkedUrl(
+      responsive.find((url) => url.endsWith("/1024.webp")),
+      "pi.alosem.com",
+      "1024 image",
+    ),
+    original: checkedUrl(record.imageUrl, "pi.alosem.com", "original image"),
   };
-  const rawSteps = await Promise.all(
-    projection.recipe.steps.map(async (step, index) => ({
-      order: index + 1,
-      scene_id: sceneId,
-      title: step.output.title,
-      exact_prompt: step.exactPrompt,
-      model: step.model,
-      revision_of: step.revisionOf ?? null,
-      output: await asset(step.output, "output", index, true),
-      references: await Promise.all(
-        step.inputs.map(({ position, role, asset: input }) => {
-          if (position < 1) fail(`Invalid input position for ${slug}`);
-          return asset(input, role, position - 1);
-        }),
-      ),
-    })),
+  const canonical = checkedUrl(
+    "https://alosem.com/i/" + record.slug,
+    "alosem.com",
+    "canonical",
   );
-  const outputs = new Map();
-  let stageCount = 0;
-  const steps = rawSteps.map((step) => {
-    const prior = step.revision_of ? outputs.get(step.revision_of) : null;
-    const stage = prior?.stage ?? ++stageCount;
-    const revision = prior ? prior.revision + 1 : 1;
-    const item = {
-      ...step,
-      stage,
-      revision,
-      label: `Step ${stage}${revision > 1 ? ` · Revision ${revision}` : ""}`,
-    };
-    outputs.set(step.output.id, item);
-    return item;
-  });
-  for (const step of steps)
-    if (step.references.some((reference, index) => reference.order !== index + 1))
-      fail(`Incomplete ordered references for ${slug}`);
 
   return {
+    kind: "campaign-standalone",
     origin: "alosem",
     id: record.id,
-    slug,
+    slug: record.slug,
     title: record.title,
     description: record.description,
-    standalone_prompt: record.prompt,
-    prompt_kind: record.promptKind,
-    exact_prompt: record.exactPrompt,
     model: record.model,
+    category: source.category,
+    mode: record.mode,
+    exact_prompt: record.exactPrompt,
     tags: record.tags,
-    colors: record.colors,
+    palette: record.colors,
     dimensions: { width: record.width, height: record.height },
-    created_at: record.createdAt,
-    canonical_url: canonical.href,
-    image_url: imageUrl,
-    composition_url: composition.href,
-    references: steps.at(-1).references,
-    steps,
-    stage_count: stageCount,
-    recipe: {
-      available: true,
-      compositionId,
-      sceneId,
-      publicationId: projection.publicationId,
-      publicationEpoch: projection.publicationEpoch,
-      inputCount: lastStep.inputs.length,
-    },
+    aspect: record.aspect,
+    hasTransparency: record.hasTransparency === true,
     provenance: {
-      graphDigest: projection.recipe.graphDigest,
-      snapshotDigest: projection.recipe.snapshotDigest,
+      generationTool: "built-in imagegen",
+      exactBackend: "unknown",
+      statement: provenanceStatement,
     },
-    output: { format: record.outputFormat ?? record.mime?.split("/").at(-1) },
-    rights: {
-      attribution: "Pixexid",
-      basis: source.rights_basis,
-      linked_image_license:
-        "Excluded from this repository's CC BY 4.0 catalog license; see Alosem Terms.",
-    },
-    source_api: apiUrl.href,
+    review: source.review,
+    canonical_url: canonical,
+    image_urls: imageUrls,
+    created_at: record.createdAt,
   };
 }
 
-export function fetchCase(source, fetchImpl = fetch) {
-  if (source.origin === "pixexid") return fetchPixexidCase(source, fetchImpl);
-  if (source.origin === "alosem") return fetchAlosemCase(source, fetchImpl);
-  fail(`Unsupported source origin: ${source.origin}`);
-}
-
-function recipeVisual(item) {
-  return item.steps
-    .map((step) => {
-      const inputs = step.references
-        .map(
-          (reference) => `<td align="center" valign="top">
-<strong>${reference.order}. ${htmlEscape(roleLabel(reference.role))}</strong><br>
-<a href="${reference.image_url}"><img src="${reference.image_url}" alt="${htmlEscape(reference.title)}" width="150"></a><br>
-<sub>${htmlEscape(reference.title)}</sub>
-</td>`,
-        )
-        .join("\n");
-      const final = step.order === item.steps.length;
-      return `### ${step.label} — ${htmlEscape(step.title)}
-
-<table>
-<tr>
-${inputs}
-</tr>
-</table>
-
-<p align="center"><strong>Ordered references → ${final ? "Final AI Image Composition" : "Step output"}</strong></p>
-
-<p align="center">
-<a href="${final ? item.canonical_url : step.output.image_url}"><img src="${final ? item.image_url : step.output.image_url}" alt="${htmlEscape(step.title)}" width="760"></a><br>
-<strong>${htmlEscape(step.title)}</strong>
-</p>
-
-<details>
-<summary>Exact prompt for ${step.label}</summary>
-
-\`\`\`text
-${step.prompt ?? step.exact_prompt}
-\`\`\`
-</details>`;
-    })
-    .join("\n\n");
+export function teamCase(source) {
+  const detail = source.case;
+  if (!detail) fail("Missing team case detail: " + source.slug);
+  return {
+    kind: "campaign-team",
+    origin: "team",
+    id: detail.id,
+    slug: source.slug,
+    title: detail.title,
+    description: detail.description,
+    model: "GPT Image 2.5",
+    category: source.category,
+    mode: detail.mode,
+    exact_prompt: detail.exact_prompt,
+    execution_prompt: detail.execution_prompt,
+    tags: detail.tags,
+    palette: detail.palette,
+    dimensions: detail.dimensions,
+    aspect: detail.aspect,
+    hasTransparency: detail.hasTransparency === true,
+    provenance: {
+      generationTool: "built-in imagegen",
+      exactBackend: "unknown",
+      statement: provenanceStatement,
+    },
+    review: source.review,
+    references: detail.references,
+    preview: detail.preview,
+    created_at: detail.created_at,
+  };
 }
 
 export function caseMarkdown(item) {
-  const isAlosem = item.origin === "alosem";
-  const recipe = isAlosem
-    ? `${item.stage_count} steps · ${item.references.length} final-step inputs · versioned export`
-    : `${item.stage_count} steps · ${item.references.length} final-step inputs · ${markdownEscape(item.recipe.kind)}`;
-  const provenance = isAlosem
-    ? `| Graph digest | \`${item.provenance.graphDigest}\` |
-| Snapshot digest | \`${item.provenance.snapshotDigest}\` |`
-    : `| Generated | ${markdownEscape(item.provenance.generated_on)} |
-| Moderation | ${markdownEscape(item.provenance.moderation)} |
-| Output SHA-256 | \`${item.provenance.sha256}\` |
-| Source SHA-256 | \`${item.provenance.source_sha256}\` |
-| Import manifest SHA-256 | \`${item.provenance.import_manifest_sha256}\` |`;
-  const prompt = isAlosem
-    ? `## What you see
+  if (item.kind === "campaign-team") return teamCaseMarkdown(item);
+  return (
+    "# " +
+    item.title +
+    "\n\n" +
+    item.description +
+    "\n\n" +
+    '<p align="center"><a href="' +
+    item.canonical_url +
+    '"><img src="' +
+    item.image_urls["1024"] +
+    '" alt="' +
+    escapeHtml(item.description) +
+    '" width="760"></a></p>\n\n' +
+    "[Open in Alosem](" +
+    item.canonical_url +
+    ")\n\n" +
+    "## Exact prompt\n\n" +
+    "Copy this submitted prompt as a starting point. Image generation is nondeterministic, so a rerun will not reproduce identical pixels.\n\n" +
+    "```text\n" +
+    item.exact_prompt +
+    "\n```\n\n" +
+    "## Provenance\n\n" +
+    "| Field | Value |\n| --- | --- |\n" +
+    "| Model family | GPT Image 2.5 |\n" +
+    "| Generation tool | built-in imagegen |\n" +
+    "| Exact backend | unknown |\n" +
+    "| Mode | " +
+    item.mode +
+    " |\n" +
+    "| Dimensions | " +
+    item.dimensions.width +
+    " × " +
+    item.dimensions.height +
+    " |\n" +
+    "| Transparency | " +
+    (item.hasTransparency ? "Yes" : "No") +
+    " |\n\n" +
+    item.provenance.statement +
+    "\n\n" +
+    "## Review notes and limitations\n\n" +
+    "**" +
+    item.review.verdict +
+    " · checked " +
+    item.review.checked +
+    ".** " +
+    item.review.notes +
+    "\n\n" +
+    "This externally generated result is **Curated on Alosem**. “Made with Alosem” is reserved for work actually created through an Alosem creative workflow.\n\n" +
+    "Catalogue text and data are licensed under [CC BY 4.0](../LICENSE). Linked images are not relicensed by this repository.\n"
+  );
+}
 
-**Standalone interpretation · adapted creation prompt**
+export function teamCaseMarkdown(item) {
+  const references = item.references
+    .map(
+      (reference, index) =>
+        index +
+        1 +
+        ". `" +
+        reference.file +
+        "` — " +
+        reference.role +
+        "\n   - SHA-256 `" +
+        reference.sha256 +
+        "`\n   - " +
+        reference.provenance,
+    )
+    .join("\n");
+  return (
+    "# " +
+    item.title +
+    "\n\n" +
+    item.description +
+    "\n\n" +
+    '<p align="center"><img src="../' +
+    item.preview.path +
+    '" alt="' +
+    escapeHtml(item.description) +
+    '" width="760"></p>\n\n' +
+    "## Exact prompt\n\n" +
+    "Copy this standalone prompt as a starting point. Image generation is nondeterministic, so a rerun will not reproduce identical pixels.\n\n" +
+    "```text\n" +
+    item.exact_prompt +
+    "\n```\n\n" +
+    "## Reference-based run recipe\n\n" +
+    "This case was generated from founder-provided reference sheets rather than from text alone. Those sheets are required image inputs to reproduce the run, they are not included in this repository, and the standalone prompt above remains the public copyable prompt.\n\n" +
+    "**Ordered references**\n\n" +
+    references +
+    "\n\n" +
+    "**Exact execution prompt**\n\n" +
+    "```text\n" +
+    item.execution_prompt +
+    "\n```\n\n" +
+    "## Provenance\n\n" +
+    "| Field | Value |\n| --- | --- |\n" +
+    "| Model family | GPT Image 2.5 |\n" +
+    "| Generation tool | built-in imagegen |\n" +
+    "| Exact backend | unknown |\n" +
+    "| Mode | " +
+    item.mode +
+    " |\n" +
+    "| Dimensions | " +
+    item.dimensions.width +
+    " × " +
+    item.dimensions.height +
+    " |\n" +
+    "| Transparency | " +
+    (item.hasTransparency ? "Yes" : "No") +
+    " |\n\n" +
+    item.provenance.statement +
+    "\n\n" +
+    "## Review notes and limitations\n\n" +
+    "**" +
+    item.review.verdict +
+    " · checked " +
+    item.review.checked +
+    ".** " +
+    item.review.notes +
+    "\n\n" +
+    teamLabel +
+    "\n\n" +
+    "Catalogue text and data are licensed under [CC BY 4.0](../LICENSE). The preview image is hosted in this repository under the same licence.\n"
+  );
+}
 
-\`\`\`text
-${item.standalone_prompt}
-\`\`\``
-    : `## Exact public prompt
+function openingGrid(cases) {
+  const bySlug = new Map(cases.map((item) => [item.slug, item]));
+  const cards = openingSlugs.map((slug) => bySlug.get(slug));
+  if (cards.some((item) => !item)) fail("Opening grid case missing");
 
-\`\`\`text
-${item.prompt}
-\`\`\``;
-  return `# ${item.title} — Multi-Reference AI Composition
-
-**AI Image Composition recipe:** ${item.stage_count} steps → one final artwork.
-
-${item.description}
-
-## Ordered references → final result
-
-${recipeVisual(item)}
-
-Role labels and order come directly from the public ${isAlosem ? "Alosem" : "Pixexid"} recipe.
-
-| Field | Value |
-| --- | --- |
-| Model | ${markdownEscape(item.model)} |
-| Format | ${item.dimensions.width} × ${item.dimensions.height} ${markdownEscape(item.output.format)} |
-| Recipe | ${recipe} |
-| Tags | ${item.tags.map((tag) => `\`${tag}\``).join(" ")} |
-| Canonical | [${isAlosem ? "Alosem" : "Pixexid"} image page](${item.canonical_url}) |
-| Composition | [Public AI Composition recipe](${item.composition_url}) |
-
-${prompt}
-
-## Provenance
-
-| Field | Value |
-| --- | --- |
-${provenance}
-
-Catalog text and data are licensed under [CC BY 4.0](../LICENSE). Linked images are not relicensed here. ${item.rights.basis}
-`;
+  const rows = [];
+  for (let index = 0; index < cards.length; index += 3) {
+    const group = cards.slice(index, index + 3);
+    rows.push(
+      "<tr>\n" +
+        group
+          .map(
+            (item) =>
+              '<td align="center" valign="top"><a href="cases/' +
+              item.slug +
+              '.md"><img src="' +
+              item.image_urls["512"] +
+              '" alt="' +
+              escapeHtml(item.description) +
+              '" width="260"></a><br><strong>' +
+              escapeHtml(item.title) +
+              "</strong></td>",
+          )
+          .join("\n") +
+        "\n</tr>",
+    );
+  }
+  return "<table>\n" + rows.join("\n") + "\n</table>";
 }
 
 export function readmeMarkdown(cases) {
-  const gallery = cases
-    .map(
-      (item) => `## [${item.title}](cases/${item.slug}.md)
+  const counts = Object.fromEntries(
+    categories.map(([key]) => [key, cases.filter((item) => item.category === key).length]),
+  );
+  const categoryIndex = categories
+    .map(([key, label]) => {
+      const links = cases
+        .filter((item) => item.category === key)
+        .map((item) => "[" + item.title + "](cases/" + item.slug + ".md)")
+        .join(" · ");
+      return "| " + label + " | " + counts[key] + " | " + (links || "No reviewed case in this release") + " |";
+    })
+    .join("\n");
+  const worked = cases.find((item) => item.slug === workedSlug);
+  if (!worked) fail("Worked example missing");
 
-${item.description}
-
-${recipeVisual(item)}
-
-[${item.origin === "pixexid" ? "Exact prompt and provenance" : "Prompt and provenance"}](cases/${item.slug}.md) · [Canonical image](${item.canonical_url}) · [Public recipe](${item.composition_url})`,
-    )
-    .join("\n\n");
-  return `<h1 align="center">Multi-Reference AI Composition — Pixexid Prompt Atlas</h1>
-
-<p align="center"><strong>AI Image Compositions built from ordered visual references, exact prompts, and public recipes.</strong></p>
-
-<p align="center">
-  See how <a href="https://pixexid.com">Pixexid</a> and <a href="https://alosem.com">Alosem</a> expose reproducible artwork built from identity, character, product, logo, style, and other visual references.
-</p>
-
-<p align="center">
-  <a href="data/cases.json"><img alt="JSON data" src="https://img.shields.io/badge/data-JSON-24443B"></a>
-  <a href="LICENSE"><img alt="CC BY 4.0" src="https://img.shields.io/badge/catalog-CC_BY_4.0-D9775F"></a>
-  <a href="LICENSE-CODE"><img alt="MIT licensed code" src="https://img.shields.io/badge/code-MIT-D7A236"></a>
-</p>
-
-This is a curated, machine-readable atlas of **Multi-Reference AI Composition** recipes. Every case below shows its ordered public inputs and each intermediate output, followed by the final result—so the complete method is visible without leaving GitHub.
-
-${gallery}
-
-## Use the structured data
-
-Each case includes its ordered references, public and exact prompt fields, model, dimensions, tags, palette, recipe metadata, and provenance in [\`data/cases.json\`](data/cases.json). Pixexid v1 records remain intact; Alosem records use the v2 two-layer prompt and digest provenance shape. The schema is [\`schema/cases.schema.json\`](schema/cases.schema.json).
-
-\`\`\`sh
-node -e 'const a=require("./data/cases.json"); console.log(a.cases.map(({title,origin,references})=>({title,origin,references:references.map(r=>r.role)})))'
-\`\`\`
-
-## Refresh from Pixexid or Alosem
-
-The export is allowlisted: adding a case requires an explicit public source origin, canonical image URL, composition URL, and reviewed rights basis in [\`data/sources.json\`](data/sources.json).
-
-\`\`\`sh
-node scripts/export.mjs
-node scripts/validate.mjs --links
-\`\`\`
-
-The dependency-free exporter reads only anonymous public Pixexid or Alosem pages and APIs. It allows assets only from the evidenced \`pixexid.com\`, \`pwi.pixexid.com\`, \`images.pixexid.com\`, and \`alosem.com\` hosts, and fails closed on unavailable pages, any other host, unapproved or unavailable recipes, missing or expired reference previews, flattened prompt layers, mismatched canonical finals, incomplete provenance, unsafe script payloads, or private fields. It never connects to either database, object storage, production credentials, generation, import, or publication surfaces.
-
-## Rights and safety
-
-This atlas contains only Pixexid-admin-owned, original AI Image Compositions with public source sharing enabled. It excludes private user records, private masters, third-party source files, real-person identity material, secrets, and work with unclear rights.
-
-Catalog text and structured data are [CC BY 4.0](LICENSE); scripts are [MIT](LICENSE-CODE). Linked images remain remotely hosted and are not relicensed by this repository. See the [rights scope](RIGHTS.md) and [contribution policy](CONTRIBUTING.md).
-
-Create and explore more on [Pixexid](https://pixexid.com) and [Alosem](https://alosem.com).
-`;
+  return (
+    "# GPT Image 2.5 Prompts & Examples — by Alosem\n\n" +
+    "Original examples and exact prompts — curated by Alosem.\n\n" +
+    "See what each prompt produced and adapt it for your own work. The standalone and transparent cases need no source images; the character-identity cases were generated from reference sheets and need those sheets as inputs to reproduce. Browse all " +
+    cases.length +
+    " reviewed examples here or continue in Alosem.\n\n" +
+    "[Browse examples](#category-index) · [Open the visual gallery](https://alosem.com) · [Read the JSON catalogue](data/cases.json)\n\n" +
+    "Independent community resource. Not affiliated with or endorsed by OpenAI.\n\n" +
+    "## Six examples to start with\n\n" +
+    openingGrid(cases) +
+    "\n\n" +
+    "This release contains standalone generations, transparent assets, and reference-based character-identity cases. The character-identity cases were generated by the Alosem team from founder-provided identity sheets; reproducing them requires those reference sheets as image inputs, and the sheets are not included in this repository. No case is labeled an edit because no reviewed public edit exposed its required source images.\n\n" +
+    "## Category index\n\n" +
+    "<!-- category-counts " +
+    JSON.stringify(counts) +
+    " -->\n\n" +
+    "| Category | Cases | Examples |\n| --- | ---: | --- |\n" +
+    categoryIndex +
+    "\n\n" +
+    "## Complete worked example\n\n" +
+    "### [" +
+    worked.title +
+    "](cases/" +
+    worked.slug +
+    ".md)\n\n" +
+    worked.description +
+    "\n\n" +
+    '<p align="center"><a href="' +
+    worked.canonical_url +
+    '"><img src="' +
+    worked.image_urls["1024"] +
+    '" alt="' +
+    escapeHtml(worked.description) +
+    '" width="520"></a></p>\n\n' +
+    "#### Exact prompt\n\n```text\n" +
+    worked.exact_prompt +
+    "\n```\n\n" +
+    "**Review:** " +
+    worked.review.notes +
+    "\n\n[Open in Alosem](" +
+    worked.canonical_url +
+    ") · [Read the complete case](cases/" +
+    worked.slug +
+    ".md)\n\n" +
+    "## Provenance\n\n" +
+    provenanceStatement +
+    "\n\n" +
+    "No seed, API quality setting, cost, or backend ID is claimed because those values were not exposed. “Made with Alosem” is used only when Alosem was part of the creative workflow, and externally published examples are **Curated on Alosem**. The character-identity cases are team-generated campaign work and carry a third label, **Created for Alosem**.\n\n" +
+    "## Use the catalogue\n\n" +
+    "The machine-readable [catalogue](data/cases.json) and [schema](schema/cases.schema.json) drive every case page and the counts above. Refresh and verify the export with:\n\n" +
+    "```sh\nnode scripts/export.mjs\nnode --test scripts/*.test.mjs\nnode scripts/validate.mjs --links\n```\n\n" +
+    "## Contributing and licensing\n\n" +
+    "Contributions must provide a public Alosem image, the exact submitted prompt, accurate model-family provenance, rights to share the material, and a completed visual review. See [CONTRIBUTING.md](CONTRIBUTING.md).\n\n" +
+    "Catalogue text and structured data are [CC BY 4.0](LICENSE); scripts are [MIT](LICENSE-CODE). Linked images remain remotely hosted and are not relicensed here. See [RIGHTS.md](RIGHTS.md).\n"
+  );
 }
 
 export async function exportCatalog(sources, fetchImpl = fetch) {
-  const cases = [];
-  for (const source of sources) cases.push(await fetchCase(source, fetchImpl));
-  cases.sort((a, b) => b.created_at.localeCompare(a.created_at));
-  return cases;
+  return Promise.all(
+    sources.map((source) =>
+      source.kind === "team"
+        ? Promise.resolve(teamCase(source))
+        : fetchCase(source, fetchImpl),
+    ),
+  );
 }
 
 async function main() {
-  const sources = JSON.parse(
-    await readFile(join(root, "data/sources.json"), "utf8"),
-  );
+  const sources = JSON.parse(await readFile(join(root, "data/sources.json"), "utf8"));
   const cases = await exportCatalog(sources);
-  await mkdir(join(root, "cases"), { recursive: true });
+  const caseDir = join(root, "cases");
+  await mkdir(caseDir, { recursive: true });
+  const expected = new Set(cases.map((item) => item.slug + ".md"));
+  for (const name of await readdir(caseDir))
+    if (name.endsWith(".md") && !expected.has(name)) await unlink(join(caseDir, name));
   await writeFile(
     join(root, "data/cases.json"),
-    `${JSON.stringify({ schema_version: 2, cases }, null, 2)}\n`,
+    JSON.stringify({ schema_version: 3, cases }, null, 2) + "\n",
   );
   for (const item of cases)
-    await writeFile(join(root, "cases", `${item.slug}.md`), caseMarkdown(item));
+    await writeFile(join(caseDir, item.slug + ".md"), caseMarkdown(item));
   await writeFile(join(root, "README.md"), readmeMarkdown(cases));
-  console.log(`Exported ${cases.length} public AI Image Compositions.`);
+  console.log("Exported " + cases.length + " Alosem campaign cases.");
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url))
