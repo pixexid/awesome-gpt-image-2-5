@@ -8,9 +8,20 @@ const cases = JSON.parse(
   await readFile(new URL("../data/cases.json", import.meta.url), "utf8"),
 ).cases;
 
-test("validates all 30 campaign cases", () => {
-  assert.equal(cases.length, 30);
+test("validates all 37 campaign cases", () => {
+  assert.equal(cases.length, 37);
   for (const item of cases) assert.doesNotThrow(() => validateCase(item));
+});
+
+test("rejects team case preview and reference drift", () => {
+  const team = structuredClone(cases.find((item) => item.kind === "campaign-team"));
+  assert.ok(team, "team case fixture missing");
+  const previewDrift = structuredClone(team);
+  previewDrift.preview.path = "assets/other.jpg";
+  assert.throws(() => validateCase(previewDrift), /Preview path mismatch/);
+  const referenceDrift = structuredClone(team);
+  referenceDrift.references[0].sha256 = "not-a-hash";
+  assert.throws(() => validateCase(referenceDrift), /Invalid reference hash/);
 });
 
 test("campaign and historical records cannot cross the discriminator", () => {

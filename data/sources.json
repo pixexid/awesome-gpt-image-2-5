@@ -268,5 +268,406 @@
       "verdict": "pass",
       "notes": "ALTERNATE rank 8, illustration_backgrounds. Photoreal night beach: girl crouched with both hands cupping a glowing moon sphere half-submerged in a tidal pool, lighthouse beam, crabs, feather. Both hands and both arms read correctly, face coherent, crouch pose plausible, no stray limb or text. Strongest like-for-like replacement for a photoreal case. Promotable (first choice)."
     }
+  },
+  {
+    "slug": "blond-man-studies-a-rainy-city-model-9acedb62",
+    "category": "character_identity",
+    "kind": "team",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Independent verification confirmed identity fidelity against the blond-male turnaround: a long oval face clearly longer than wide, broad cheekbones, a firm tapered jaw and medium-square chin, light stubble, and the high swept-wavy hair mass preserved rather than flattened, on an athletic broad-shouldered build. Because the downcast irises read grey-blue at display scale, they were sampled numerically: iris R−B of +61 and +78 against the reference panel's +59 confirms the prompted brown eyes. The reaching hand shows four fingers plus a nailed thumb, the resting hand four nailed fingers with the thumb occluded, and both hands remain fully in frame as asked. Background boards and drawings carry no lettering, and no watermark, extra person, or reference-sheet panel appears."
+    },
+    "case": {
+      "id": "9acedb62-5da8-4e74-9d19-f020e635aa42",
+      "title": "Blond Man Studies a Rainy City Model",
+      "description": "A focused blond architect adjusts a scale model beneath warm task lights as rain blurs the city windows.",
+      "mode": "reference-based identity-preserve",
+      "exact_prompt": "A photorealistic editorial photograph of a blond, brown-eyed young man with light stubble and a swept wavy hairstyle working late in an architectural studio. His moderately long oval face, broad cheekbones, firm tapered jaw, athletic broad-shouldered build, and high-volume hair remain distinctive. In a three-quarter waist-up view, he leans over a scale model and adjusts one small building piece with a focused hand while rain traces the tall windows behind him. Warm task lamps balance the cool blue city light. Natural skin, believable fingers, worn drafting materials, no readable text, logos, or watermark.",
+      "execution_prompt": "Use case: identity-preserve\nAsset type: character-consistency campaign scene\nPrimary request: Generate a new photorealistic editorial scene of the exact blond male identity from Image 1 working late in a rainy architectural studio, leaning over a scale model and adjusting one small building piece with his right hand.\nInput images: Image 1 is the sole identity anchor. Preserve its face, hair, eyes, skin, stubble, body proportions, and age; do not copy the reference-sheet layout or black athletic outfit.\nScene/backdrop: Contemporary architecture studio at night, tall rain-streaked windows, blurred blue city lights, warm task lamps, scale model and drafting materials with no readable writing.\nSubject and load-bearing identity proportions: One man only. Preserve the moderately long oval face, clearly longer than wide; broad cheekbones; firm jaw that tapers without becoming narrow; medium-square chin; straight balanced nose; brown eyes; light stubble. Preserve the high, wide mass of swept wavy dark-blond hair rather than flattening or shortening it. Preserve the athletic mesomorphic body: broad shoulders, developed but not bulky arms and chest, narrow waist, long balanced limbs. Age remains mid-to-late twenties.\nWardrobe: Charcoal rolled-sleeve overshirt over a plain cream T-shirt; no branding.\nComposition/framing: Three-quarter waist-up editorial photograph, face unobscured, both forearms visible, right hand adjusting one model piece, left hand resting naturally on the table; entire hands remain in frame.\nLighting/mood: Cool rainy-window ambience with warm amber task light; focused, quietly absorbed expression.\nMaterials/textures: Real skin pores and stubble, individual hair strands, matte card model, worn wood table, rain on glass.\nConstraints: Identity fidelity and load-bearing proportions take priority over scene styling. Exactly one head, two eyes, two arms, two hands, five fingers per visible hand with natural joints; no fused or duplicated digits. No readable text, gibberish, logos, watermark, extra people, extra limbs, cropped hands, glamorized skin, or reference-sheet panels.\nAvoid: widened round face, narrow pinched jaw, flat or helmet-like hair, bodybuilder bulk, teenager appearance, beard, blue eyes, illustration, 3D render.",
+      "tags": [
+        "character-consistency",
+        "blond-man",
+        "architecture-studio",
+        "rainy-night",
+        "editorial-photography",
+        "identity-study"
+      ],
+      "palette": [
+        "#20252C",
+        "#B6C9D8",
+        "#D6A45F",
+        "#E6D7C5",
+        "#795C45"
+      ],
+      "dimensions": {
+        "width": 1370,
+        "height": 1148
+      },
+      "aspect": "685:574",
+      "hasTransparency": false,
+      "references": [
+        {
+          "file": "ChatGPT Image Sep 12, 2026, 12_57_55 PM (1).png",
+          "role": "Sole blond-male identity anchor; face geometry, brown eyes, light stubble, swept-wavy hair mass, athletic body proportions, expressions, and hand anatomy",
+          "sha256": "bfaa509e0492c7496dceaa14486a552029262e01e39407411cfbb07003c74523",
+          "provenance": "Founder-supplied identity sheet; founder-stated GPT Image 2.5 output."
+        }
+      ],
+      "preview": {
+        "path": "assets/blond-man-studies-a-rainy-city-model-9acedb62.jpg",
+        "bytes": 211241,
+        "sha256": "f3ae0206c931ea939f4231a13f789ba4425907f9abe1ac6d12c6ae4cb7eac841",
+        "candidate_sha256": "f3ae0206c931ea939f4231a13f789ba4425907f9abe1ac6d12c6ae4cb7eac841",
+        "derivation": "Byte-identical copy of the verified candidate."
+      },
+      "created_at": "2026-09-17T07:25:41.785Z"
+    }
+  },
+  {
+    "slug": "blond-man-crosses-the-morning-flower-market-d2d3b695",
+    "category": "character_identity",
+    "kind": "team",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Resolved after two repair passes. The first two generations were flagged for mismatched footwear; the selected third generation instead puts the subject in matching floor-length tailored trousers whose cuffs cover both feet, so the footwear defect class is structurally eliminated rather than re-attempted, with only identical flat dark toe/sole slivers below each hem. Footwear was never an identity attribute here — the reference turnaround shows this subject barefoot in all five views. Identity holds against the same anchor as the rain-studio case (iris R−B of +70 and +82, brown; same long oval face, broad cheekbones, firm tapered jaw, light stubble, and high swept-wavy hair mass). Note: this is a fresh full render, not the earlier frame, so the market sits to the left, the pavement is wet and reflective, and the background crowd differs. Both hands are clean, background shoppers are indistinct, and no readable text, logo, or watermark appears. Minor note: the trouser hems read a little wider and more flared than the prompt's 'straight tailored cut'."
+    },
+    "case": {
+      "id": "d2d3b695-0230-4394-94fb-c992e1a65721",
+      "title": "Blond Man Crosses the Morning Flower Market",
+      "description": "The blond character moves through a sunlit flower market with an easy smile and a plain canvas tote.",
+      "mode": "reference-based identity-preserve",
+      "exact_prompt": "A candid photorealistic street photograph of the same distinctive blond, brown-eyed young man walking through an early-morning flower market. His moderately long oval face, broad cheekbones, firm tapered jaw, light stubble, high swept-wavy hair mass, broad shoulders, narrow waist, and long athletic limbs remain recognizable. He carries a plain canvas tote in one hand and smiles toward a flower stall while taking a natural stride. Soft sun, striped awnings, buckets of flowers, and shallow depth of field create an easy, optimistic mood. Full body and both hands are visible; no readable signs, logos, or watermark.",
+      "execution_prompt": "Use case: identity-preserve\nAsset type: character-consistency campaign scene\nPrimary request: Generate a fresh candid photorealistic full-body street scene of the exact blond male identity from Image 1 walking through an early-morning flower market, carrying a plain canvas tote and smiling toward a flower stall. Preserve the same flower-market scene and identity intent while structurally removing visible footwear detail.\nInput images: Image 1 is the sole identity anchor. Preserve its face, hair, eyes, skin, stubble, body proportions, and age; do not copy the reference-sheet layout or black athletic outfit.\nScene/backdrop: Open-air flower market with striped awnings, simple unlabeled buckets of flowers, pale wet stone street, softly blurred shoppers far behind, and subtle ground reflections.\nSubject and load-bearing identity proportions: One principal man. Preserve the moderately long oval face, clearly longer than wide; broad cheekbones; firm tapered jaw; medium-square chin; brown eyes; light stubble. Preserve the high, wide mass of swept wavy dark-blond hair. Preserve the athletic mesomorphic body: broad shoulders, developed but not bulky chest and arms, narrow waist, long balanced legs. Do not shorten the legs or enlarge the head.\nWardrobe: Muted olive overshirt open over a plain white T-shirt and full-length dark tailored trousers. Both trouser legs use the same straight tailored cut and extend fully to the ground, with matching long cuffs that break cleanly and deeply over the feet. The cuffs fully cover all footwear on both feet. No shoe upper, collar, tongue, lacing, eyelets, ankle opening, or footwear construction is visible anywhere. At most, an identical simple flat dark toe/sole contact sliver may appear directly below each matching trouser cuff, without any upper detail. Unbranded cream canvas tote.\nPose/activity: Natural measured walking step, relaxed smile, head turned slightly toward the flowers; right hand holds the tote handles, left arm swings naturally. Keep the step compact enough that both long trouser cuffs continue to cover the footwear completely.\nComposition/framing: Vertical full-body environmental portrait with both trouser hems, both ground-contact points, both arms, and both hands completely visible and contained. The full-length matching cuffs must obscure both shoes symmetrically. Wet-ground reflections may suggest two simple matching dark footwear shapes, but must not reveal or invent shoe details.\nLighting/mood: Soft low morning sunlight, warm and spontaneous, realistic street color with restrained wet-stone reflections.\nConstraints: Identity fidelity and load-bearing proportions take priority. Exactly one principal head, two arms, two hands, two long trouser legs, two fully covered feet, and two matching trouser cuffs; five fingers per visible hand with natural joints; normal gait and weight distribution. Footwear must be fully concealed behind the cuffs on both feet. No visible shoe upper, collar, shaft, tongue, lace, eyelet, panel seam, logo, or mismatched footwear detail. Background shoppers remain indistinct and do not resemble the subject. No readable text, gibberish, logos, watermark, duplicated subject, fused limbs, extra fingers, cropped hems, cropped ground-contact points, or reference-sheet panels.\nAvoid: visible sneakers, visible shoe construction, exposed ankles, raised trouser cuffs, different hem lengths, asymmetric cuff breaks, round widened face, narrow pointed chin, flat hair, bodybuilder bulk, short stocky legs, beard, blue eyes, fashion-editorial airbrushing, illustration, 3D render.",
+      "tags": [
+        "character-consistency",
+        "blond-man",
+        "flower-market",
+        "candid-street",
+        "editorial-photography",
+        "full-body"
+      ],
+      "palette": [
+        "#D8C7A5",
+        "#657052",
+        "#F3EEE6",
+        "#D96D68",
+        "#738DA0"
+      ],
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "aspect": "2:3",
+      "hasTransparency": false,
+      "references": [
+        {
+          "file": "ChatGPT Image Sep 12, 2026, 12_57_55 PM (1).png",
+          "role": "Sole blond-male identity anchor; face geometry, brown eyes, light stubble, swept-wavy hair mass, athletic body proportions, expressions, and hand anatomy",
+          "sha256": "bfaa509e0492c7496dceaa14486a552029262e01e39407411cfbb07003c74523",
+          "provenance": "Founder-supplied identity sheet; founder-stated GPT Image 2.5 output."
+        }
+      ],
+      "preview": {
+        "path": "assets/blond-man-crosses-the-morning-flower-market-d2d3b695.jpg",
+        "bytes": 561247,
+        "sha256": "791e1dde072655feb9c663fba34de0698a005ba07552cd84c08cdd0c6563361f",
+        "candidate_sha256": "05747b3cf25ac1b36944f9e578e355db4d4aceab7aae4a64f1a597d8cdab00a9",
+        "derivation": "JPEG re-encode of the verified opaque PNG candidate; pixels and 1024×1536 dimensions unchanged."
+      },
+      "created_at": "2026-09-17T08:09:16.991Z"
+    }
+  },
+  {
+    "slug": "blond-woman-finds-a-rare-jazz-record-8d3314a5",
+    "category": "character_identity",
+    "kind": "team",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Verification confirmed the load-bearing bob geometry against the blond-female turnaround: softly heart-oval face only modestly longer than wide, broad cheekbones, small tapered chin, brown almond eyes, and a rounded chin-length bob with a side part, swept fringe, outer hair mass wider than the jaw, and ends curving inward at jaw level. Both hands hold opposite edges of a single sleeve with coherent grip and no fused or extra digits. Wall shelves and record bins were swept at native resolution for ambient text: every sleeve is abstract colour-field art with no lettering or gibberish. Notes, not defects: the framing runs closer to three-quarter full-length than the prompt's 'mid-length' view, the face carries more eye makeup than the reference's natural look, and the hip-to-waist contrast reads slightly fuller than the compact reference build."
+    },
+    "case": {
+      "id": "8d3314a5-b027-4882-9605-71079b892b7e",
+      "title": "Blond Woman Finds a Rare Jazz Record",
+      "description": "A blonde woman pauses over an unbranded record sleeve in the warm hush of a vintage music shop.",
+      "mode": "reference-based identity-preserve",
+      "exact_prompt": "A photorealistic lifestyle photograph of a blonde, brown-eyed young woman browsing a quiet vintage record store. Her softly heart-oval face, broad cheekbones, small tapered chin, rounded chin-length bob, and compact athletic hourglass build remain distinctive. In a three-quarter mid-length view, she slides a single unbranded record sleeve from a wooden bin with both hands and gives a small pleased smile. Warm window light, amber wood, and dusty jewel-toned sleeves create an intimate discovery. Fingers and sleeve edges are clean; no readable album text, logos, or watermark.",
+      "execution_prompt": "Use case: identity-preserve\nAsset type: character-consistency campaign scene\nPrimary request: Generate a new photorealistic lifestyle scene of the exact blond female identity from Image 1 browsing a quiet vintage record store and lifting one unbranded record sleeve from a wooden bin.\nInput images: Image 1 is the sole identity anchor. Preserve its face, chin-length bob, eyes, skin, body proportions, and age; do not copy the reference-sheet layout or black athletic outfit.\nScene/backdrop: Small vintage record shop with wooden bins, softly blurred shelves, warm front-window light, and abstract unlettered sleeve art.\nSubject and load-bearing identity proportions: One woman only. Preserve the softly heart-oval face, only modestly longer than wide; broad cheekbones; compact lower face; small tapered chin; brown almond-shaped eyes; straight small nose; full but natural lips. Preserve the rounded chin-length blonde bob: side part, smooth swept fringe, outer hair mass wider than the jaw, ends curving inward at jaw level. Preserve the compact athletic hourglass build with moderate shoulders, defined waist, balanced hips, and neither elongated nor extremely thin limbs.\nWardrobe: Simple rust-colored knit top with elbow-length sleeves and high-waisted dark denim; no branding or jewelry that obscures identity.\nPose/activity: Three-quarter mid-length view, both hands naturally holding the opposite edges of one record sleeve, small pleased smile, eyes glancing at the sleeve.\nLighting/mood: Warm diffused window light, intimate and quietly delighted.\nConstraints: Identity fidelity and load-bearing proportions take priority. Exactly one head, two arms, two hands, five fingers per visible hand; clean sleeve geometry and natural grip. No readable text, gibberish, logos, watermark, extra people in focus, extra limbs, fused fingers, cropped hands, photorealistic identity drift, or reference-sheet panels.\nAvoid: long narrow face, enlarged chin, long hair, pixie cut, flattened bob, oversized hair helmet, tall runway-thin body, exaggerated curves, blue eyes, heavy makeup, illustration, 3D render.",
+      "tags": [
+        "character-consistency",
+        "blonde-woman",
+        "record-store",
+        "music-discovery",
+        "lifestyle-photography",
+        "identity-study"
+      ],
+      "palette": [
+        "#B87555",
+        "#6D4934",
+        "#D5B57B",
+        "#27313B",
+        "#E7D8C5"
+      ],
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "aspect": "2:3",
+      "hasTransparency": false,
+      "references": [
+        {
+          "file": "ChatGPT Image Sep 12, 2026, 12_57_55 PM (2).png",
+          "role": "Sole blond-female identity anchor; heart-oval face geometry, brown eyes, rounded chin-length bob mass, compact athletic-hourglass body proportions, expressions, and hand anatomy",
+          "sha256": "ac592b95c4ee8e75b0c64e522039823e51f9823bac3de5cc8c93c8d54c3c7b85",
+          "provenance": "Founder-supplied identity sheet; founder-stated GPT Image 2.5 output."
+        }
+      ],
+      "preview": {
+        "path": "assets/blond-woman-finds-a-rare-jazz-record-8d3314a5.jpg",
+        "bytes": 194071,
+        "sha256": "ce85c16b2cd2e46f78e3aec2b3e636eaecbf6d06e5389fce140d9fd3cdd1c259",
+        "candidate_sha256": "ce85c16b2cd2e46f78e3aec2b3e636eaecbf6d06e5389fce140d9fd3cdd1c259",
+        "derivation": "Byte-identical copy of the verified candidate."
+      },
+      "created_at": "2026-09-17T07:29:41.006Z"
+    }
+  },
+  {
+    "slug": "red-haired-woman-tends-the-glasshouse-seedlings-37eb8b40",
+    "category": "character_identity",
+    "kind": "team",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Verification confirmed a narrow long heart-oval face clearly longer than wide, high cheekbones, a small tapered chin, a tall loose copper-red bun with substantial vertical mass and fine wispy tendrils at both temples, and a slim long-limbed athletic build. Eyes are distinctly green-hazel, matching the reference's green-iris panel and satisfying the prompt's 'Avoid: brown eyes'. Freckles are dense across forehead, nose, and cheeks and also on the backs of the hands and forearms, genuinely meeting the 'no missing freckles' constraint rather than approximating it. The watering can is fully coherent — body, rim, handle arc bracketed into the body, spout, and a perforated rose emitting real water — and the pot-steadying hand is cleanly articulated. Note, not a defect: the sprinkle lands on the adjacent seedling tray rather than into the pot her other hand steadies."
+    },
+    "case": {
+      "id": "37eb8b40-f680-432b-be14-783f7f9cb7e4",
+      "title": "Red-Haired Woman Tends the Glasshouse Seedlings",
+      "description": "A freckled red-haired woman waters young plants beneath the misted panes of a quiet glasshouse.",
+      "mode": "reference-based identity-preserve",
+      "exact_prompt": "A natural photorealistic portrait of a freckled red-haired, green-hazel-eyed young woman tending seedlings in a misty glasshouse. Her narrow long heart-oval face, high cheekbones, small tapered chin, tall loose bun with wispy tendrils, and slim long-limbed athletic build remain recognizable. In a three-quarter knee-up view, she steadies a small terracotta pot with one hand and gently waters it with the other, smiling softly at the new growth. Diffused overcast light, wet glass, fern green, and clay orange create a quiet hopeful mood. Hands are anatomically clean; no text, logos, or watermark.",
+      "execution_prompt": "Use case: identity-preserve\nAsset type: character-consistency campaign scene\nPrimary request: Generate a new natural photorealistic portrait of the exact red-haired female identity from Image 1 tending seedlings in a misty glasshouse, steadying one terracotta pot and watering it with a small metal can.\nInput images: Image 1 is the sole identity anchor. Preserve its face, freckles, eyes, hair, body proportions, and age; do not copy the reference-sheet layout or black athletic outfit.\nScene/backdrop: Humid glasshouse with fogged panes, wooden potting bench, restrained green seedlings, terracotta pots, and no signage.\nSubject and load-bearing identity proportions: One woman only. Preserve the narrow long heart-oval face, clearly longer than wide; high cheekbones; slim jaw; small tapered chin; green-hazel eyes; dense natural freckles across nose, cheeks, forehead, arms, and hands. Preserve the tall loose copper-red bun that adds substantial vertical hair mass above the skull, with fine wispy tendrils at both temples and nape. Preserve the slim long-limbed athletic hourglass build with narrow shoulders, defined waist, balanced hips, and long forearms and legs without emaciation.\nWardrobe: Forest-green fitted long-sleeve henley and practical tan trousers; no branding.\nPose/activity: Three-quarter knee-up view, left hand steadying one small pot, right hand holding a small watering can, natural wrists and finger placement, gentle closed-mouth smile.\nLighting/mood: Soft overcast daylight diffused through wet glass; quiet, hopeful, tactile.\nConstraints: Identity fidelity and load-bearing proportions take priority. Exactly one head, two arms, two hands; five fingers per visible hand with natural joints; watering-can handle and spout must be coherent. No readable text, gibberish, logos, watermark, extra people, extra limbs, fused fingers, cropped hands, missing freckles, or reference-sheet panels.\nAvoid: round short face, wide heavy jaw, low compact bun, straight loose hair, pale unfreckled skin, stocky build, exaggerated thinness, brown eyes, glam makeup, illustration, 3D render.",
+      "tags": [
+        "character-consistency",
+        "red-haired-woman",
+        "freckles",
+        "glasshouse",
+        "gardening",
+        "natural-portrait",
+        "identity-study"
+      ],
+      "palette": [
+        "#315B43",
+        "#A95632",
+        "#C8794E",
+        "#D8D3C4",
+        "#755A3C"
+      ],
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "aspect": "2:3",
+      "hasTransparency": false,
+      "references": [
+        {
+          "file": "8b52a152-8365-563d-abf2-757dcbae8517.jpeg",
+          "role": "Sole red-haired-female identity anchor; long heart-oval face geometry, green-hazel eyes, freckles, tall loose bun mass, slim long-limbed athletic proportions, expressions, and hand anatomy",
+          "sha256": "f24f5626683be71903e209ddbd71653f67bd0ea0dfcdc302126a05bb170d5ae3",
+          "provenance": "Founder-supplied identity sheet; founder-stated GPT Image 2.5 output."
+        }
+      ],
+      "preview": {
+        "path": "assets/red-haired-woman-tends-the-glasshouse-seedlings-37eb8b40.jpg",
+        "bytes": 219811,
+        "sha256": "fef72616412914a652a8d433f820e2e3629b8c39b7d68d6ef8ab68b5aeb2741e",
+        "candidate_sha256": "fef72616412914a652a8d433f820e2e3629b8c39b7d68d6ef8ab68b5aeb2741e",
+        "derivation": "Byte-identical copy of the verified candidate."
+      },
+      "created_at": "2026-09-17T07:31:58.136Z"
+    }
+  },
+  {
+    "slug": "merle-bulldog-explores-a-misty-tidepool-e42f702d",
+    "category": "character_identity",
+    "kind": "team",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Verification confirmed every listed breed marker against the merle French bulldog anchor: broad nearly square head, tall upright bat ears set wide apart with rounded tips, an extremely short wrinkled muzzle, pale blue-grey eyes set wide, cream base coat with irregular blue-grey merle mottling rather than stripes or spots, wide chest, and a short tail stub. The limb count was checked at native resolution: four distinct weight-bearing legs and four coherent paws with separated toes and visible claws, one head, two ears, no fused or duplicated limb, and the tidepool reflection reads as an inverted blur rather than a second dog. Note, not a defect: the measured cream-body length-to-withers ratio of 1.30 sits at the upper end of 'slightly longer than tall', so the build reads a touch leggier and less cobby than the stocky reference, with straighter legs; recognition is unaffected."
+    },
+    "case": {
+      "id": "e42f702d-691a-4d8b-a24c-0b48ec5554e1",
+      "title": "Merle Bulldog Explores a Misty Tidepool",
+      "description": "A blue-gray merle French bulldog studies a reflective tidepool on a cool, mist-softened coast.",
+      "mode": "reference-based identity-preserve",
+      "exact_prompt": "A crisp natural photograph of a blue-gray merle French bulldog exploring a misty coastal tidepool. The dog keeps its broad nearly square head, tall wide-set bat ears, extremely short muzzle, pale blue-gray eyes, cream chest, compact cobby muscular torso, wide stance, and short sturdy legs. It stands alert on wet dark rocks with all four paws visible, looking down at a small reflective pool while sea mist softens the background. Merle patches remain coherent across head and body; whiskers, nose, paws, and reflection are clean. No collar, costume, text, logos, or watermark.",
+      "execution_prompt": "Use case: identity-preserve\nAsset type: character-consistency campaign scene\nPrimary request: Generate a new natural photorealistic scene of the exact merle French bulldog identity from Image 1 standing alert on wet coastal rocks and investigating a small tidepool in soft morning mist.\nInput images: Image 1 is the sole identity anchor. Preserve its head, ears, muzzle, eyes, merle pattern language, body proportions, paws, and age; do not copy the reference-sheet layout or gray studio background.\nScene/backdrop: Quiet rocky coast at low tide, one small reflective tidepool, wet charcoal stones, faint sea foam and misty horizon; no people or other animals.\nSubject and load-bearing identity proportions: One dog only. Preserve the broad nearly square head; tall upright bat ears set wide apart with rounded tips; extremely short broad muzzle approximately one quarter of head length; broad dark nose; pale blue-gray eyes set wide; cream blaze on lower face and chest. Preserve the compact cobby muscular torso, wide chest, short sturdy legs, slightly longer body than tall, broad paws, and very short tail. Preserve blue-gray and warm-cream merle patches as irregular mottling rather than stripes or spots.\nPose/activity: Natural four-square standing pose with head lowered slightly toward the pool, ears upright, curious calm expression, all four legs and paws visible and bearing plausible weight.\nComposition/framing: Low eye-level landscape photograph, full dog contained with clear separation between all four legs; reflection may appear only inside the tidepool and must not resemble a second dog.\nLighting/mood: Diffused cool morning light, soft mist, quiet curiosity.\nMaterials/textures: Short realistic fur, wet nose, detailed paw pads/claws where visible, water ripples, slick stone.\nConstraints: Identity fidelity and load-bearing proportions take priority. Exactly one dog, one head, two ears, four legs, four paws; anatomically coherent joints and toes. No collar, clothing, readable text, gibberish, logos, watermark, extra animal, duplicated face, extra leg, fused paw, long muzzle, floppy ears, long tail, cropped paws, or reference-sheet panels.\nAvoid: tall lean terrier proportions, narrow head, long snout, low ear set, blue coat without cream, dalmatian spots, cartoon style, 3D render.",
+      "tags": [
+        "character-consistency",
+        "french-bulldog",
+        "merle-dog",
+        "tidepool",
+        "coastal-mist",
+        "animal-photography",
+        "identity-study"
+      ],
+      "palette": [
+        "#74767A",
+        "#C9B9A2",
+        "#E5DED2",
+        "#3C4145",
+        "#9FB5BE"
+      ],
+      "dimensions": {
+        "width": 1535,
+        "height": 1024
+      },
+      "aspect": "1535:1024",
+      "hasTransparency": false,
+      "references": [
+        {
+          "file": "ChatGPT Image Sep 13, 2026, 10_34_09 PM.png",
+          "role": "Sole merle French bulldog identity anchor; square head, wide-set bat ears, short muzzle, pale eyes, merle pattern language, cobby body proportions, and paw anatomy",
+          "sha256": "dbccf357892830cd1c717d6cc69a863c58547d0c7017ec7fe6afc0256b9332c9",
+          "provenance": "Founder-supplied identity sheet; founder-stated GPT Image 2.5 output."
+        }
+      ],
+      "preview": {
+        "path": "assets/merle-bulldog-explores-a-misty-tidepool-e42f702d.jpg",
+        "bytes": 244622,
+        "sha256": "76a360bb375a794e62242767c883945a870478a6fb040c05e284da901276355f",
+        "candidate_sha256": "76a360bb375a794e62242767c883945a870478a6fb040c05e284da901276355f",
+        "derivation": "Byte-identical copy of the verified candidate."
+      },
+      "created_at": "2026-09-17T07:32:44.220Z"
+    }
+  },
+  {
+    "slug": "sema-becomes-a-glazed-ceramic-portrait-337c92bd",
+    "category": "character_identity",
+    "kind": "team",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Identity verified against the stated proportions rather than by impression: the head including its black contour measures W/H ≈ 1.07, satisfying 'near-circular horizontal oval, slightly wider than tall', with the ivory face inset low inside the hair mass at roughly two-thirds of total head width. The heavy golden fringe begins near top-centre and sweeps diagonally across the forehead to the lower-right cheek in the correct direction — not reversed, not centred curtain bangs — with the shorter pointed lock on the left and two rounded lower side lobes. Medium proof passes: raised relief with real thickness, glaze pooling along the black contours, specular gloss, subtle kiln mottling, and a physical cast shadow establish fired ceramic rather than a flat print. One complete head, no body, neck, ears, or nose, generous wall margin on all sides, no crop, text, or watermark."
+    },
+    "case": {
+      "id": "337c92bd-d6d4-4541-a6d2-2345a8f3197d",
+      "title": "Sema Becomes a Glazed Ceramic Portrait",
+      "description": "Sema's familiar graphic identity becomes a hand-glazed ceramic relief under quiet museum light.",
+      "mode": "reference-based style-transfer",
+      "exact_prompt": "A studio hero photograph of Sema reimagined as a handcrafted glazed ceramic wall portrait. Her recognizable near-circular blonde-bob silhouette, sweeping golden fringe, low-set ivory face, black oval eyes with winged lashes, and tiny approving smile are modeled in shallow relief. Cream, honey-gold, ochre, and glossy black glazes pool subtly along sculpted contours, with tiny kiln variations and hand-finished edges. The ceramic portrait stands against a warm charcoal plaster wall under soft directional museum light, fully contained with a quiet shadow. No body, nose, text, logos, or watermark.",
+      "execution_prompt": "Use case: style-transfer\nAsset type: identity-across-media campaign hero\nPrimary request: Re-render the exact flat-vector-style Sema head from Images 1 and 2 as a handcrafted glazed ceramic wall portrait photographed as a physical object. Change the medium only; preserve the mascot identity and proportions.\nInput images: Image 1 is the primary silhouette, viewing-angle, hair-sweep, face-inset, line-placement, and palette anchor. Image 2 is the primary eye, lash, mouth, and expression-language anchor.\nScene/backdrop: Warm charcoal mineral-plaster wall, subtle museum plinth edge, no other objects.\nSubject and load-bearing identity proportions: Exactly one Sema head, no body. Preserve the near-circular horizontal oval silhouette, slightly wider than tall; compact bob ending in two rounded lower side lobes; heavy golden fringe beginning near top-center and sweeping diagonally across the forehead to the lower-right cheek; shorter pointed lock on the left. Preserve the warm-ivory face inset centered low inside the hair mass at roughly two-thirds of total head width, with wide soft cheeks and a small rounded chin. Preserve evenly spaced black oval eyes at mid-face, outer winged lashes, no nose, and a tiny curved approving mouth well below the eyes.\nMedium/material: Real handmade glazed ceramic in shallow relief, cream face glaze, honey-gold and ochre hair glazes, glossy near-black outlines/features. Slight glaze pooling and kiln variation, but contours remain crisp and readable.\nComposition/framing: Square studio hero, object fully contained with generous wall margin, slight three-quarter physical depth, no crop.\nLighting/mood: Soft directional museum light, gentle physical shadow, refined and tactile.\nConstraints: Medium translation must not alter identity geometry. No body, neck, ears, nose, extra face, duplicated object, flattened printed illustration, text, labels, logos, watermark, chipped missing features, or cropped silhouette.\nAvoid: taller egg-shaped head, narrow face inset, centered curtain bangs, reversed hair sweep, oversized eyes, realistic human face, emoji redesign, plastic toy, vector-flat rendering.",
+      "tags": [
+        "sema",
+        "identity-across-media",
+        "glazed-ceramic",
+        "mascot",
+        "character-consistency",
+        "studio-photography"
+      ],
+      "palette": [
+        "#1D2021",
+        "#0A0908",
+        "#FCF1E1",
+        "#F3CA8A",
+        "#DDC08A"
+      ],
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "aspect": "1:1",
+      "hasTransparency": false,
+      "references": [
+        {
+          "file": "sema-directions-v2-review.png",
+          "role": "Primary Sema silhouette, angle, bob geometry, hair-sweep, face-inset, line-placement, and palette anchor",
+          "sha256": "e1d800ae146552a6818e7a4f56ed3b63302a387df3295062dcb4cf79e2c2c786",
+          "provenance": "Founder-supplied raster review sheet; upstream model provenance unavailable."
+        },
+        {
+          "file": "sema-reactions-v2-review.png",
+          "role": "Primary Sema eye, lash, mouth, expression-language, and accent anchor",
+          "sha256": "7bac316938369e9fae96a10d4e6b864843280f9ce8ceb580b63c7c3b462ed717",
+          "provenance": "Founder-supplied raster review sheet; upstream model provenance unavailable."
+        }
+      ],
+      "preview": {
+        "path": "assets/sema-becomes-a-glazed-ceramic-portrait-337c92bd.jpg",
+        "bytes": 229395,
+        "sha256": "3b6c065e2cf2fc8a01703c07abd2d41c5132445e6f1309835b97acb044c76449",
+        "candidate_sha256": "3b6c065e2cf2fc8a01703c07abd2d41c5132445e6f1309835b97acb044c76449",
+        "derivation": "Byte-identical copy of the verified candidate."
+      },
+      "created_at": "2026-09-17T07:33:33.214Z"
+    }
+  },
+  {
+    "slug": "sema-travels-across-four-crafted-materials-36e3d7f0",
+    "category": "character_identity",
+    "kind": "team",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Verification confirmed four genuinely distinct materials rather than four colourways: needle-felted wool with matted fibre nap and stitched features, glazed ceramic with pooled gloss in the contour channels, carved painted wood with directional grain and chiselled tool facets, and translucent cast resin with internal depth and suspended pigment flecks. The same head appears in all four cells — measured head bounding boxes of 444×414, 426×405, 429×410, and 451×433 give a width spread of 5.9% and a height spread of 6.9%, with every W/H ratio in 1.042–1.072. Grid geometry was measured as an exact 2×2 with a complete outer border — full-width rules at y=6–7, 623–624, and 1246–1247, full-height rules at x=6–7, 626–627, and 1246–1247 — with each head well inside its cell and no boundary overlap. Exactly four heads, no labels, captions, text, or watermark."
+    },
+    "case": {
+      "id": "36e3d7f0-def9-438a-9c86-d4fc5a4c10cd",
+      "title": "Sema Travels Across Four Crafted Materials",
+      "description": "Sema's fixed identity moves across wool, ceramic, carved wood, and translucent resin in one comparative study.",
+      "mode": "reference-based style-transfer",
+      "exact_prompt": "A polished four-cell material study presents the same Sema head in felted wool, glazed ceramic, carved and painted wood, and translucent cast resin. Every cell preserves her slightly wide near-circular bob silhouette, diagonal golden fringe, low-centered ivory face, black oval eyes with winged lashes, and tiny smile while making the physical medium unmistakable through fibers, glaze, wood grain, or suspended resin depth. A restrained charcoal grid and even specimen lighting make comparison immediate. Each head is fully contained at matching scale; no labels, body parts, text, logos, or watermark.",
+      "execution_prompt": "Use case: style-transfer\nAsset type: identity-across-media material study\nPrimary request: Create one polished 2-by-2 study sheet showing the exact same Sema head from Images 1 and 2 physically re-rendered in four unmistakably different media: needle-felted wool, glazed ceramic relief, carved and painted wood, and translucent cast resin. Preserve identity geometry in every cell; change material only.\nInput images: Image 1 is the primary silhouette, viewing-angle, hair-sweep, face-inset, line-placement, and palette anchor. Image 2 is the primary eye, lash, mouth, and expression-language anchor.\nScene/backdrop: Four equal charcoal specimen cells separated by thin warm-gray rules; no labels or captions.\nSubject and load-bearing identity proportions: The same one Sema head in every cell, no body. Preserve the near-circular horizontal oval silhouette, slightly wider than tall; compact bob ending in two rounded lower side lobes; heavy golden fringe beginning near top-center and sweeping diagonally across the forehead to the lower-right cheek; shorter pointed lock on the left. Preserve the warm-ivory face inset centered low inside the hair mass at roughly two-thirds of total head width, wide soft cheeks, small rounded chin, evenly spaced black oval eyes at mid-face, outer winged lashes, no nose, and tiny curved mouth.\nCell media: top-left needle-felted wool with visible fibers and stitched black features; top-right glossy glazed ceramic relief with glaze pooling; bottom-left carved and painted wood with shallow tool marks and visible grain; bottom-right translucent cast resin with suspended golden pigment and embedded opaque face/features. All retain the same cream, gold, ochre, and black palette.\nComposition/framing: Exact 2-by-2 grid, one fully contained head per cell, matching scale, viewing angle, face placement, and expression, generous padding, no overlap.\nLighting/mood: Even museum specimen lighting tailored subtly to reveal each material.\nConstraints: Identity proportions must match across all four cells and the references. Exactly four heads total. No body, neck, ears, nose, extra face, duplicated cell, text, labels, logos, watermark, cropped silhouette, or medium ambiguity.\nAvoid: taller oval heads, narrow face insets, reversed or centered fringe, realistic human faces, four color variants of the same material, flat printed vector copies, inconsistent eye spacing or mouth placement.",
+      "tags": [
+        "sema",
+        "identity-across-media",
+        "material-study",
+        "felt",
+        "ceramic",
+        "wood",
+        "resin",
+        "character-consistency"
+      ],
+      "palette": [
+        "#1D2021",
+        "#0A0908",
+        "#FCF1E1",
+        "#F3CA8A",
+        "#DDC08A"
+      ],
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "aspect": "1:1",
+      "hasTransparency": false,
+      "references": [
+        {
+          "file": "sema-directions-v2-review.png",
+          "role": "Primary Sema silhouette, angle, bob geometry, hair-sweep, face-inset, line-placement, and palette anchor",
+          "sha256": "e1d800ae146552a6818e7a4f56ed3b63302a387df3295062dcb4cf79e2c2c786",
+          "provenance": "Founder-supplied raster review sheet; upstream model provenance unavailable."
+        },
+        {
+          "file": "sema-reactions-v2-review.png",
+          "role": "Primary Sema eye, lash, mouth, expression-language, and accent anchor",
+          "sha256": "7bac316938369e9fae96a10d4e6b864843280f9ce8ceb580b63c7c3b462ed717",
+          "provenance": "Founder-supplied raster review sheet; upstream model provenance unavailable."
+        }
+      ],
+      "preview": {
+        "path": "assets/sema-travels-across-four-crafted-materials-36e3d7f0.jpg",
+        "bytes": 197887,
+        "sha256": "1f1e63bc9c76ee5e70801f9aa6ac1082e1997750a90bead354319b66ad69f660",
+        "candidate_sha256": "1f1e63bc9c76ee5e70801f9aa6ac1082e1997750a90bead354319b66ad69f660",
+        "derivation": "Byte-identical copy of the verified candidate."
+      },
+      "created_at": "2026-09-17T07:34:57.838Z"
+    }
   }
 ]

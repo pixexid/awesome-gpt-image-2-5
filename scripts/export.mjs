@@ -9,6 +9,8 @@ const api = "https://alosem.com/api/images/";
 const assetHosts = new Set(["alosem.com", "pi.alosem.com"]);
 const provenanceStatement =
   "Generated with built-in imagegen. Listed under the GPT Image 2.5 family; the exact backend variant was not exposed.";
+const teamLabel =
+  "This team-generated campaign case was produced directly by the Alosem team with built-in imagegen from founder-provided identity sheets; it is neither externally published nor created through the Alosem creative product, so it is labeled **Created for Alosem**.";
 const categories = [
   ["product_visuals", "Product visuals"],
   ["posters_typography", "Posters & typography"],
@@ -114,7 +116,40 @@ export async function fetchCase(source, fetchImpl = fetch) {
   };
 }
 
+export function teamCase(source) {
+  const detail = source.case;
+  if (!detail) fail("Missing team case detail: " + source.slug);
+  return {
+    kind: "campaign-team",
+    origin: "team",
+    id: detail.id,
+    slug: source.slug,
+    title: detail.title,
+    description: detail.description,
+    model: "GPT Image 2.5",
+    category: source.category,
+    mode: detail.mode,
+    exact_prompt: detail.exact_prompt,
+    execution_prompt: detail.execution_prompt,
+    tags: detail.tags,
+    palette: detail.palette,
+    dimensions: detail.dimensions,
+    aspect: detail.aspect,
+    hasTransparency: detail.hasTransparency === true,
+    provenance: {
+      generationTool: "built-in imagegen",
+      exactBackend: "unknown",
+      statement: provenanceStatement,
+    },
+    review: source.review,
+    references: detail.references,
+    preview: detail.preview,
+    created_at: detail.created_at,
+  };
+}
+
 export function caseMarkdown(item) {
+  if (item.kind === "campaign-team") return teamCaseMarkdown(item);
   return (
     "# " +
     item.title +
@@ -167,6 +202,79 @@ export function caseMarkdown(item) {
   );
 }
 
+export function teamCaseMarkdown(item) {
+  const references = item.references
+    .map(
+      (reference, index) =>
+        index +
+        1 +
+        ". `" +
+        reference.file +
+        "` — " +
+        reference.role +
+        "\n   - SHA-256 `" +
+        reference.sha256 +
+        "`\n   - " +
+        reference.provenance,
+    )
+    .join("\n");
+  return (
+    "# " +
+    item.title +
+    "\n\n" +
+    item.description +
+    "\n\n" +
+    '<p align="center"><img src="../' +
+    item.preview.path +
+    '" alt="' +
+    escapeHtml(item.description) +
+    '" width="760"></p>\n\n' +
+    "## Exact prompt\n\n" +
+    "Copy this standalone prompt as a starting point. Image generation is nondeterministic, so a rerun will not reproduce identical pixels.\n\n" +
+    "```text\n" +
+    item.exact_prompt +
+    "\n```\n\n" +
+    "## Reference-based run recipe\n\n" +
+    "This case was generated from founder-provided reference sheets rather than from text alone. Those sheets are required image inputs to reproduce the run, they are not included in this repository, and the standalone prompt above remains the public copyable prompt.\n\n" +
+    "**Ordered references**\n\n" +
+    references +
+    "\n\n" +
+    "**Exact execution prompt**\n\n" +
+    "```text\n" +
+    item.execution_prompt +
+    "\n```\n\n" +
+    "## Provenance\n\n" +
+    "| Field | Value |\n| --- | --- |\n" +
+    "| Model family | GPT Image 2.5 |\n" +
+    "| Generation tool | built-in imagegen |\n" +
+    "| Exact backend | unknown |\n" +
+    "| Mode | " +
+    item.mode +
+    " |\n" +
+    "| Dimensions | " +
+    item.dimensions.width +
+    " × " +
+    item.dimensions.height +
+    " |\n" +
+    "| Transparency | " +
+    (item.hasTransparency ? "Yes" : "No") +
+    " |\n\n" +
+    item.provenance.statement +
+    "\n\n" +
+    "## Review notes and limitations\n\n" +
+    "**" +
+    item.review.verdict +
+    " · checked " +
+    item.review.checked +
+    ".** " +
+    item.review.notes +
+    "\n\n" +
+    teamLabel +
+    "\n\n" +
+    "Catalogue text and data are licensed under [CC BY 4.0](../LICENSE). The preview image is hosted in this repository under the same licence.\n"
+  );
+}
+
 function openingGrid(cases) {
   const bySlug = new Map(cases.map((item) => [item.slug, item]));
   const cards = openingSlugs.map((slug) => bySlug.get(slug));
@@ -216,13 +324,15 @@ export function readmeMarkdown(cases) {
   return (
     "# GPT Image 2.5 Prompts & Examples — by Alosem\n\n" +
     "Original examples and exact prompts — curated by Alosem.\n\n" +
-    "See what each prompt produced, confirm that these standalone cases require no source images, and adapt the prompts for your own work. Browse all 30 reviewed examples here or continue in Alosem.\n\n" +
+    "See what each prompt produced and adapt it for your own work. The standalone and transparent cases need no source images; the character-identity cases were generated from reference sheets and need those sheets as inputs to reproduce. Browse all " +
+    cases.length +
+    " reviewed examples here or continue in Alosem.\n\n" +
     "[Browse examples](#category-index) · [Open the visual gallery](https://alosem.com) · [Read the JSON catalogue](data/cases.json)\n\n" +
     "Independent community resource. Not affiliated with or endorsed by OpenAI.\n\n" +
     "## Six examples to start with\n\n" +
     openingGrid(cases) +
     "\n\n" +
-    "This release contains standalone generations and transparent assets. It does not label any case as an edit because no reviewed public edit exposed its required source images.\n\n" +
+    "This release contains standalone generations, transparent assets, and reference-based character-identity cases. The character-identity cases were generated by the Alosem team from founder-provided identity sheets; reproducing them requires those reference sheets as image inputs, and the sheets are not included in this repository. No case is labeled an edit because no reviewed public edit exposed its required source images.\n\n" +
     "## Category index\n\n" +
     "<!-- category-counts " +
     JSON.stringify(counts) +
@@ -258,7 +368,7 @@ export function readmeMarkdown(cases) {
     "## Provenance\n\n" +
     provenanceStatement +
     "\n\n" +
-    "No seed, API quality setting, cost, or backend ID is claimed because those values were not exposed. “Made with Alosem” is used only when Alosem was part of the creative workflow. These externally generated examples are **Curated on Alosem**.\n\n" +
+    "No seed, API quality setting, cost, or backend ID is claimed because those values were not exposed. “Made with Alosem” is used only when Alosem was part of the creative workflow, and externally published examples are **Curated on Alosem**. The character-identity cases are team-generated campaign work and carry a third label, **Created for Alosem**.\n\n" +
     "## Use the catalogue\n\n" +
     "The machine-readable [catalogue](data/cases.json) and [schema](schema/cases.schema.json) drive every case page and the counts above. Refresh and verify the export with:\n\n" +
     "```sh\nnode scripts/export.mjs\nnode --test scripts/*.test.mjs\nnode scripts/validate.mjs --links\n```\n\n" +
@@ -269,7 +379,13 @@ export function readmeMarkdown(cases) {
 }
 
 export async function exportCatalog(sources, fetchImpl = fetch) {
-  return Promise.all(sources.map((source) => fetchCase(source, fetchImpl)));
+  return Promise.all(
+    sources.map((source) =>
+      source.kind === "team"
+        ? Promise.resolve(teamCase(source))
+        : fetchCase(source, fetchImpl),
+    ),
+  );
 }
 
 async function main() {

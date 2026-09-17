@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { caseMarkdown, fetchCase } from "./export.mjs";
+import { caseMarkdown, fetchCase, teamCase } from "./export.mjs";
 
 const slug = "fixture-case-11111111";
 const source = {
@@ -94,4 +94,55 @@ test("rejects a missing exact submitted prompt", async () => {
     ),
     /Invalid campaign source/,
   );
+});
+
+test("projects a team source into a reference-based case", () => {
+  const source = {
+    slug: "team-fixture-case-11111111",
+    category: "character_identity",
+    kind: "team",
+    review: {
+      checked: "2026-09-17",
+      verdict: "pass",
+      notes: "Verified against the anchor sheet.",
+    },
+    case: {
+      id: "11111111-1111-4111-8111-111111111111",
+      title: "Team Fixture Case",
+      description: "A deterministic team fixture.",
+      mode: "reference-based identity-preserve",
+      exact_prompt: "Create one fixture.",
+      execution_prompt: "Use case: identity-preserve\nPrimary request: fixture.",
+      tags: ["fixture"],
+      palette: ["#112233"],
+      dimensions: { width: 1024, height: 1024 },
+      aspect: "1:1",
+      hasTransparency: false,
+      references: [
+        {
+          file: "fixture.png",
+          role: "fixture anchor",
+          sha256: "a".repeat(64),
+          provenance: "Founder-supplied fixture sheet.",
+        },
+      ],
+      preview: {
+        path: "assets/team-fixture-case-11111111.jpg",
+        bytes: 12345,
+        sha256: "b".repeat(64),
+        candidate_sha256: "c".repeat(64),
+        derivation: "Byte-identical copy of the verified candidate.",
+      },
+      created_at: "2026-09-17T00:00:00.000Z",
+    },
+  };
+  const item = teamCase(source);
+  assert.equal(item.kind, "campaign-team");
+  assert.equal(item.origin, "team");
+  assert.equal(item.hasTransparency, false);
+  const page = caseMarkdown(item);
+  assert.match(page, /## Reference-based run recipe/);
+  assert.match(page, /Created for Alosem/);
+  assert.match(page, /\.\.\/assets\/team-fixture-case-11111111\.jpg/);
+  assert.match(page, /Use case: identity-preserve/);
 });
