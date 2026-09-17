@@ -4,7 +4,7 @@ Original examples and exact prompts — curated by Alosem.
 
 See what each prompt produced and adapt it for your own work. The standalone and transparent cases need no source images; the character-identity cases were generated from reference sheets and need those sheets as inputs to reproduce. Browse all 37 reviewed examples here or continue in Alosem.
 
-[Browse examples](#category-index) · [Open the visual gallery](https://alosem.com) · [Read the JSON catalogue](data/cases.json)
+[Browse examples](#category-index) · [Open the visual gallery](https://alosem.com/s/gpt-image-2-5) · [Read the JSON catalogue](data/cases.json)
 
 Independent community resource. Not affiliated with or endorsed by OpenAI.
 
