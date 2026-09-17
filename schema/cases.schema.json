@@ -192,7 +192,11 @@
         "file": { "type": "string", "minLength": 1 },
         "role": { "type": "string", "minLength": 1 },
         "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
-        "provenance": { "type": "string", "minLength": 1 }
+        "provenance": { "type": "string", "minLength": 1 },
+        "path": {
+          "type": "string",
+          "pattern": "^assets/references/[a-z0-9-]+\\.(png|jpeg|jpg|webp)$"
+        }
       }
     },
     "preview": {

@@ -14,13 +14,15 @@ A photorealistic lifestyle photograph of a blonde, brown-eyed young woman browsi
 
 ## Reference-based run recipe
 
-This case was generated from founder-provided reference sheets rather than from text alone. Those sheets are required image inputs to reproduce the run, they are not included in this repository, and the standalone prompt above remains the public copyable prompt.
+This case was generated from founder-provided reference sheets rather than from text alone. The sheets are required image inputs to reproduce the run; each is published below and under `assets/references/` so the result can be compared with its references, and the standalone prompt above remains the public copyable prompt.
 
 **Ordered references**
 
-1. `ChatGPT Image Sep 12, 2026, 12_57_55 PM (2).png` — Sole blond-female identity anchor; heart-oval face geometry, brown eyes, rounded chin-length bob mass, compact athletic-hourglass body proportions, expressions, and hand anatomy
+1. `assets/references/blond-female-identity-sheet.png` — Sole blond-female identity anchor; heart-oval face geometry, brown eyes, rounded chin-length bob mass, compact athletic-hourglass body proportions, expressions, and hand anatomy
    - SHA-256 `ac592b95c4ee8e75b0c64e522039823e51f9823bac3de5cc8c93c8d54c3c7b85`
    - Founder-supplied identity sheet; founder-stated GPT Image 2.5 output.
+
+<p align="center"><a href="../assets/references/blond-female-identity-sheet.png"><img src="../assets/references/blond-female-identity-sheet.png" alt="Reference sheet: Sole blond-female identity anchor; heart-oval face geometry, brown eyes, rounded chin-length bob mass, compact athletic-hourglass body proportions, expressions, and hand anatomy" width="420"></a></p>
 
 **Exact execution prompt**
 

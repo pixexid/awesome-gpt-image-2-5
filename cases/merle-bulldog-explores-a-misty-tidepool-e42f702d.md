@@ -14,13 +14,15 @@ A crisp natural photograph of a blue-gray merle French bulldog exploring a misty
 
 ## Reference-based run recipe
 
-This case was generated from founder-provided reference sheets rather than from text alone. Those sheets are required image inputs to reproduce the run, they are not included in this repository, and the standalone prompt above remains the public copyable prompt.
+This case was generated from founder-provided reference sheets rather than from text alone. The sheets are required image inputs to reproduce the run; each is published below and under `assets/references/` so the result can be compared with its references, and the standalone prompt above remains the public copyable prompt.
 
 **Ordered references**
 
-1. `ChatGPT Image Sep 13, 2026, 10_34_09 PM.png` — Sole merle French bulldog identity anchor; square head, wide-set bat ears, short muzzle, pale eyes, merle pattern language, cobby body proportions, and paw anatomy
+1. `assets/references/merle-bulldog-identity-sheet.png` — Sole merle French bulldog identity anchor; square head, wide-set bat ears, short muzzle, pale eyes, merle pattern language, cobby body proportions, and paw anatomy
    - SHA-256 `dbccf357892830cd1c717d6cc69a863c58547d0c7017ec7fe6afc0256b9332c9`
    - Founder-supplied identity sheet; founder-stated GPT Image 2.5 output.
+
+<p align="center"><a href="../assets/references/merle-bulldog-identity-sheet.png"><img src="../assets/references/merle-bulldog-identity-sheet.png" alt="Reference sheet: Sole merle French bulldog identity anchor; square head, wide-set bat ears, short muzzle, pale eyes, merle pattern language, cobby body proportions, and paw anatomy" width="420"></a></p>
 
 **Exact execution prompt**
 

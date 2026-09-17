@@ -143,6 +143,12 @@ export function validateTeamCase(item) {
       "Invalid reference: " + item.slug,
     );
     assert(sha256.test(reference.sha256), "Invalid reference hash: " + item.slug);
+    if (reference.path !== undefined) {
+      assert(
+        /^assets\/references\/[a-z0-9-]+\.(png|jpeg|jpg|webp)$/.test(reference.path),
+        "Invalid reference path: " + item.slug,
+      );
+    }
   }
   assert(
     item.preview?.path === "assets/" + item.slug + ".jpg",
@@ -230,6 +236,15 @@ for (const item of catalog.cases) {
       createHash("sha256").update(asset).digest("hex") === item.preview.sha256,
       "Preview hash mismatch: " + item.slug,
     );
+    for (const reference of item.references) {
+      if (!reference.path) continue;
+      const sheet = await readFile(join(root, reference.path));
+      assert(sheet.length > 0, "Empty reference sheet: " + item.slug);
+      assert(
+        createHash("sha256").update(sheet).digest("hex") === reference.sha256,
+        "Reference sheet hash mismatch: " + item.slug + " " + reference.path,
+      );
+    }
   } else {
     assert(
       page.includes(item.image_urls["1024"]) &&
