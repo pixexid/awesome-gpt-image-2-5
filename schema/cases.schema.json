@@ -1,180 +1,135 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/pixexid/pixexid-prompt-atlas/schema/cases.schema.json",
-  "title": "Pixexid Multi-Reference AI Composition Atlas",
+  "$id": "https://alosem.com/gpt-image-2-5/schema/cases.schema.json",
+  "title": "GPT Image 2.5 Prompts & Examples — by Alosem",
   "type": "object",
   "required": ["schema_version", "cases"],
+  "additionalProperties": false,
   "properties": {
-    "schema_version": { "const": 2 },
+    "schema_version": { "const": 3 },
     "cases": {
       "type": "array",
-      "minItems": 1,
       "items": {
         "oneOf": [
-          { "$ref": "#/$defs/pixexidCase" },
-          { "$ref": "#/$defs/alosemCase" }
+          { "$ref": "#/$defs/campaignCase" },
+          { "$ref": "#/$defs/historicalCase" }
         ]
       }
     }
   },
   "$defs": {
-    "dimensions": {
+    "category": {
+      "enum": [
+        "product_visuals",
+        "posters_typography",
+        "transparent_assets",
+        "character_identity",
+        "illustration_backgrounds",
+        "focused_edits"
+      ]
+    },
+    "imageUrls": {
       "type": "object",
-      "required": ["width", "height"],
+      "required": ["512", "1024", "original"],
+      "additionalProperties": false,
       "properties": {
-        "width": { "type": "integer", "minimum": 1 },
-        "height": { "type": "integer", "minimum": 1 }
+        "512": { "type": "string", "format": "uri" },
+        "1024": { "type": "string", "format": "uri" },
+        "original": { "type": "string", "format": "uri" }
       }
     },
-    "asset": {
-      "type": "object",
-      "required": ["order", "role", "id", "title", "dimensions", "image_url"],
-      "properties": {
-        "order": { "type": "integer", "minimum": 1 },
-        "role": { "type": "string", "minLength": 1 },
-        "id": { "type": "string", "minLength": 1 },
-        "title": { "type": "string", "minLength": 1 },
-        "dimensions": { "$ref": "#/$defs/dimensions" },
-        "image_url": { "type": "string", "format": "uri" }
-      }
-    },
-    "sharedCase": {
+    "campaignCase": {
       "type": "object",
       "required": [
+        "kind",
         "origin",
         "id",
         "slug",
         "title",
         "description",
         "model",
+        "category",
+        "mode",
+        "exact_prompt",
         "tags",
-        "colors",
+        "palette",
         "dimensions",
-        "created_at",
-        "canonical_url",
-        "image_url",
-        "composition_url",
-        "references",
-        "steps",
-        "stage_count",
-        "recipe",
+        "aspect",
+        "hasTransparency",
         "provenance",
-        "output",
-        "rights",
-        "source_api"
+        "review",
+        "canonical_url",
+        "image_urls",
+        "created_at"
       ],
+      "additionalProperties": false,
       "properties": {
+        "kind": { "const": "campaign-standalone" },
+        "origin": { "const": "alosem" },
+        "id": { "type": "string", "format": "uuid" },
+        "slug": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "title": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "model": { "const": "GPT Image 2.5" },
+        "category": { "$ref": "#/$defs/category" },
+        "mode": { "type": "string", "minLength": 1 },
+        "exact_prompt": { "type": "string", "minLength": 1 },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "palette": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" }
+        },
+        "dimensions": {
+          "type": "object",
+          "required": ["width", "height"],
+          "additionalProperties": false,
+          "properties": {
+            "width": { "type": "integer", "minimum": 1 },
+            "height": { "type": "integer", "minimum": 1 }
+          }
+        },
+        "aspect": { "type": "string", "minLength": 1 },
+        "hasTransparency": { "type": "boolean" },
+        "provenance": {
+          "type": "object",
+          "required": ["generationTool", "exactBackend", "statement"],
+          "additionalProperties": false,
+          "properties": {
+            "generationTool": { "const": "built-in imagegen" },
+            "exactBackend": { "const": "unknown" },
+            "statement": {
+              "const": "Generated with built-in imagegen. Listed under the GPT Image 2.5 family; the exact backend variant was not exposed."
+            }
+          }
+        },
+        "review": {
+          "type": "object",
+          "required": ["checked", "verdict", "notes"],
+          "additionalProperties": false,
+          "properties": {
+            "checked": { "type": "string", "format": "date" },
+            "verdict": { "enum": ["pass", "pass-with-limitations"] },
+            "notes": { "type": "string", "minLength": 1 }
+          }
+        },
+        "canonical_url": { "type": "string", "format": "uri" },
+        "image_urls": { "$ref": "#/$defs/imageUrls" },
+        "created_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "historicalCase": {
+      "type": "object",
+      "required": ["kind", "id", "slug", "title", "model"],
+      "properties": {
+        "kind": { "const": "historical-composition" },
         "id": { "type": "string", "format": "uuid" },
         "slug": { "type": "string", "minLength": 1 },
         "title": { "type": "string", "minLength": 1 },
-        "description": { "type": "string", "minLength": 1 },
-        "model": { "type": "string", "minLength": 1 },
-        "tags": { "type": "array", "items": { "type": "string" } },
-        "colors": { "type": "array", "items": { "type": "string" } },
-        "dimensions": { "$ref": "#/$defs/dimensions" },
-        "created_at": { "type": "string", "format": "date-time" },
-        "canonical_url": { "type": "string", "format": "uri" },
-        "image_url": { "type": "string", "format": "uri" },
-        "composition_url": { "type": "string", "format": "uri" },
-        "references": {
-          "type": "array",
-          "minItems": 1,
-          "items": { "$ref": "#/$defs/asset" }
-        },
-        "steps": { "type": "array", "minItems": 1 },
-        "stage_count": { "type": "integer", "minimum": 1 },
-        "source_api": { "type": "string", "format": "uri" }
+        "model": { "type": "string", "minLength": 1 }
       }
-    },
-    "pixexidCase": {
-      "allOf": [
-        { "$ref": "#/$defs/sharedCase" },
-        {
-          "required": ["prompt", "model_metadata", "post_processing"],
-          "properties": {
-            "origin": { "const": "pixexid" },
-            "prompt": { "type": "string", "minLength": 1 }
-          }
-        }
-      ]
-    },
-    "alosemCase": {
-      "allOf": [
-        { "$ref": "#/$defs/sharedCase" },
-        {
-          "required": ["standalone_prompt", "prompt_kind", "exact_prompt"],
-          "properties": {
-            "origin": { "const": "alosem" },
-            "standalone_prompt": { "type": "string", "minLength": 1 },
-            "prompt_kind": { "const": "standalone-interpretation" },
-            "exact_prompt": { "type": "string", "minLength": 1 },
-            "steps": {
-              "type": "array",
-              "minItems": 1,
-              "items": {
-                "type": "object",
-                "required": [
-                  "order",
-                  "scene_id",
-                  "stage",
-                  "revision",
-                  "label",
-                  "title",
-                  "exact_prompt",
-                  "model",
-                  "revision_of",
-                  "output",
-                  "references"
-                ],
-                "properties": {
-                  "order": { "type": "integer", "minimum": 1 },
-                  "exact_prompt": { "type": "string", "minLength": 1 },
-                  "model": { "type": "string", "minLength": 1 },
-                  "output": { "$ref": "#/$defs/asset" },
-                  "references": {
-                    "type": "array",
-                    "minItems": 1,
-                    "items": { "$ref": "#/$defs/asset" }
-                  }
-                }
-              }
-            },
-            "recipe": {
-              "type": "object",
-              "required": [
-                "available",
-                "compositionId",
-                "sceneId",
-                "publicationId",
-                "publicationEpoch",
-                "inputCount"
-              ],
-              "properties": {
-                "available": { "const": true },
-                "compositionId": { "type": "string", "format": "uuid" },
-                "sceneId": { "type": "string", "format": "uuid" },
-                "publicationId": { "type": "string", "format": "uuid" },
-                "publicationEpoch": { "type": "integer", "minimum": 1 },
-                "inputCount": { "type": "integer", "minimum": 1 }
-              }
-            },
-            "provenance": {
-              "type": "object",
-              "required": ["graphDigest", "snapshotDigest"],
-              "properties": {
-                "graphDigest": {
-                  "type": "string",
-                  "pattern": "^[0-9a-f]{64}$"
-                },
-                "snapshotDigest": {
-                  "type": "string",
-                  "pattern": "^[0-9a-f]{64}$"
-                }
-              }
-            }
-          }
-        }
-      ]
     }
   }
 }

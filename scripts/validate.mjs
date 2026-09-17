@@ -1,272 +1,202 @@
 #!/usr/bin/env node
 
-import { access, readFile } from "node:fs/promises";
+import { execFileSync } from "node:child_process";
+import { access, readFile, readdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
-const catalog = JSON.parse(
-  await readFile(join(root, "data/cases.json"), "utf8"),
-);
-const schema = JSON.parse(
-  await readFile(join(root, "schema/cases.schema.json"), "utf8"),
-);
+const catalog = JSON.parse(await readFile(join(root, "data/cases.json"), "utf8"));
+const sources = JSON.parse(await readFile(join(root, "data/sources.json"), "utf8"));
+const schema = JSON.parse(await readFile(join(root, "schema/cases.schema.json"), "utf8"));
 const readme = await readFile(join(root, "README.md"), "utf8");
+const categories = new Set([
+  "product_visuals",
+  "posters_typography",
+  "transparent_assets",
+  "character_identity",
+  "illustration_backgrounds",
+  "focused_edits",
+]);
 const uuid =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-const sha256 = /^[0-9a-f]{64}$/;
-const allowedHosts = new Set([
-  "pixexid.com",
-  "pwi.pixexid.com",
-  "images.pixexid.com",
-  "alosem.com",
-]);
-const pixexidAssetHosts = new Set([
-  "pixexid.com",
-  "pwi.pixexid.com",
-  "images.pixexid.com",
-]);
-const pixexidPrivateKey =
-  /^(?:user|owner|email|avatar|secret|token|cookie|authorization)(?:_?id)?$/i;
-const alosemPrivateKey =
-  /^(?:owner|private|storage)|^(?:user(?:_?id)?|email|avatar|secret|token|cookie|authorization)$/i;
+const hex = /^#[0-9a-f]{6}$/i;
+const date = /^\d{4}-\d{2}-\d{2}$/;
+const provenanceStatement =
+  "Generated with built-in imagegen. Listed under the GPT Image 2.5 family; the exact backend variant was not exposed.";
 
 const assert = (condition, message) => {
   if (!condition) throw new Error(message);
 };
 
-function checkKeys(value, forbidden, path = "case") {
-  if (!value || typeof value !== "object") return;
-  for (const [key, child] of Object.entries(value)) {
-    assert(!forbidden.test(key), `Private field ${path}.${key}`);
-    checkKeys(child, forbidden, `${path}.${key}`);
-  }
-}
-
-function checkUrl(value, item, host = item.origin === "alosem" ? "alosem.com" : null) {
+function checkUrl(value, host, item, label) {
   const url = new URL(value);
-  assert(url.protocol === "https:", `Non-HTTPS URL: ${item.id}`);
-  assert(allowedHosts.has(url.hostname), `Non-allowlisted URL: ${item.id}`);
-  if (host) assert(url.hostname === host, `Cross-origin URL: ${item.id}`);
+  assert(url.protocol === "https:", "Non-HTTPS " + label + ": " + item.slug);
+  assert(url.hostname === host, "Invalid " + label + " host: " + item.slug);
   return url;
 }
 
-function checkAlosemSource(value, assetId, item) {
-  const url = checkUrl(value, item, "alosem.com");
+export function validateCase(item) {
+  assert(item.kind === "campaign-standalone", "Invalid case discriminator: " + item.slug);
+  assert(item.origin === "alosem", "Invalid origin: " + item.slug);
+  assert(uuid.test(item.id), "Invalid id: " + item.slug);
+  assert(item.slug && item.title && item.description, "Missing identity text: " + item.slug);
+  assert(item.model === "GPT Image 2.5", "Invalid model: " + item.slug);
+  assert(categories.has(item.category), "Invalid category: " + item.slug);
+  assert(item.mode, "Missing mode: " + item.slug);
+  assert(item.exact_prompt?.trim(), "Missing exact prompt: " + item.slug);
+  assert(!item.exact_prompt.includes("```"), "Unsafe prompt fence: " + item.slug);
+  assert(Array.isArray(item.tags) && item.tags.every(Boolean), "Invalid tags: " + item.slug);
   assert(
-    url.pathname ===
-      `/api/compositions/${item.recipe.compositionId}/sources/${assetId}` &&
-      url.searchParams.get("scene") === item.recipe.sceneId &&
-      url.searchParams.get("publication") === item.recipe.publicationId &&
-      url.searchParams.get("epoch") === String(item.recipe.publicationEpoch) &&
-      url.searchParams.size === 3,
-    `Invalid epoch-scoped source URL: ${item.id}`,
+    Array.isArray(item.palette) && item.palette.every((color) => hex.test(color)),
+    "Invalid palette: " + item.slug,
   );
+  assert(
+    Number.isInteger(item.dimensions?.width) &&
+      item.dimensions.width > 0 &&
+      Number.isInteger(item.dimensions?.height) &&
+      item.dimensions.height > 0,
+    "Invalid dimensions: " + item.slug,
+  );
+  assert(item.aspect, "Missing aspect: " + item.slug);
+  assert(
+    typeof item.hasTransparency === "boolean" &&
+      (item.category === "transparent_assets") === item.hasTransparency,
+    "Transparency/category mismatch: " + item.slug,
+  );
+  assert(
+    item.provenance?.generationTool === "built-in imagegen" &&
+      item.provenance.exactBackend === "unknown" &&
+      item.provenance.statement === provenanceStatement,
+    "Invalid provenance: " + item.slug,
+  );
+  assert(
+    date.test(item.review?.checked) &&
+      ["pass", "pass-with-limitations"].includes(item.review.verdict) &&
+      item.review.notes?.trim(),
+    "Invalid review: " + item.slug,
+  );
+  const canonical = checkUrl(item.canonical_url, "alosem.com", item, "canonical URL");
+  assert(canonical.pathname === "/i/" + item.slug, "Canonical path mismatch: " + item.slug);
+  for (const key of ["512", "1024", "original"]) {
+    const image = checkUrl(item.image_urls?.[key], "pi.alosem.com", item, key + " image");
+    assert(image.pathname.includes("/" + item.slug + "/"), "Image slug mismatch: " + item.slug);
+  }
+  assert(!Number.isNaN(Date.parse(item.created_at)), "Invalid creation date: " + item.slug);
 }
 
-function checkShared(item) {
-  assert(uuid.test(item.id), `Invalid id: ${item.id}`);
-  assert(item.title && item.description && item.model, `Missing text: ${item.id}`);
-  assert(Array.isArray(item.steps) && item.steps.length > 0, `Recipe steps missing: ${item.id}`);
-  assert(item.references.length > 0, `References missing: ${item.id}`);
-  for (const key of ["canonical_url", "composition_url", "source_api", "image_url"])
-    checkUrl(item[key], item);
-  item.references.forEach((reference, index) => {
-    assert(reference.order === index + 1, `Reference order mismatch: ${item.id}`);
-    assert(reference.id && reference.role && reference.title, `Incomplete reference: ${item.id}`);
-  });
-  for (const step of item.steps) {
-    assert(step.order >= 1 && step.title, `Incomplete step: ${item.id}`);
-    assert(step.output?.id, `Invalid step output: ${item.id}`);
-    step.references.forEach((reference, index) =>
-      assert(reference.order === index + 1, `Step reference order mismatch: ${item.id}`),
-    );
-  }
-}
-
-function checkPixexid(item) {
-  checkKeys(item, pixexidPrivateKey);
-  assert(item.prompt, `Missing v1 prompt: ${item.id}`);
-  assert(item.model === item.model_metadata.name, `Model mismatch: ${item.id}`);
-  assert(
-    item.recipe.shareInputs === true && item.recipe.inputCount > 0,
-    `Recipe is not public: ${item.id}`,
-  );
-  assert(item.references.length === item.recipe.inputCount, `Reference count mismatch: ${item.id}`);
-  assert(
-    item.stage_count === new Set(item.steps.map((step) => step.scene_id)).size,
-    `Stage count mismatch: ${item.id}`,
-  );
-  assert(item.steps.at(-1).output.public_image_id === item.id, `Final step output mismatch: ${item.id}`);
-  assert(item.provenance.moderation === "approved", `Unapproved case: ${item.id}`);
-  for (const key of ["sha256", "source_sha256", "import_manifest_sha256"])
-    assert(sha256.test(item.provenance[key]), `Invalid ${key}: ${item.id}`);
-  for (const key of ["canonical_url", "composition_url", "source_api"])
-    assert(new URL(item[key]).hostname === "pixexid.com", `Invalid ${key}: ${item.id}`);
-  assert(new URL(item.image_url).hostname === "images.pixexid.com", `Invalid image URL: ${item.id}`);
-  for (const [kind, value] of [
-    ["final", item.image_url],
-    ...item.references.map((reference) => ["top-level reference", reference.image_url]),
-    ...item.steps.flatMap((step) => [
-      ["step output", step.output.image_url],
-      ...step.references.map((reference) => ["step reference", reference.image_url]),
-    ]),
-  ]) {
-    const url = new URL(value);
-    assert(
-      url.protocol === "https:" && pixexidAssetHosts.has(url.hostname),
-      `Invalid Pixexid ${kind} URL: ${item.id}`,
-    );
-  }
-  for (const step of item.steps) {
-    assert(step.prompt, `Missing v1 step prompt: ${item.id}`);
-    assert(uuid.test(step.output.id), `Invalid step output: ${item.id}`);
-    for (const reference of step.references)
-      assert(uuid.test(reference.id), `Invalid step reference: ${item.id}`);
-  }
-}
-
-function checkAlosem(item) {
-  checkKeys(item, alosemPrivateKey);
-  assert(
-    item.prompt_kind === "standalone-interpretation" &&
-      item.standalone_prompt &&
-      item.exact_prompt &&
-      item.standalone_prompt !== item.exact_prompt,
-    `Invalid Alosem prompt layers: ${item.id}`,
-  );
-  assert(
-    item.recipe.available === true &&
-      uuid.test(item.recipe.compositionId) &&
-      uuid.test(item.recipe.sceneId) &&
-      uuid.test(item.recipe.publicationId) &&
-      Number.isInteger(item.recipe.publicationEpoch) &&
-      item.recipe.publicationEpoch >= 1,
-    `Recipe is not public: ${item.id}`,
-  );
-  assert(item.references.length === item.recipe.inputCount, `Reference count mismatch: ${item.id}`);
-  assert(
-    item.stage_count === new Set(item.steps.map((step) => step.stage)).size,
-    `Stage count mismatch: ${item.id}`,
-  );
-  assert(sha256.test(item.provenance.graphDigest), `Invalid graphDigest: ${item.id}`);
-  assert(sha256.test(item.provenance.snapshotDigest), `Invalid snapshotDigest: ${item.id}`);
-  const composition = checkUrl(item.composition_url, item, "alosem.com");
-  assert(
-    composition.pathname === `/ai-composition/${item.recipe.compositionId}` &&
-      composition.searchParams.get("scene") === item.recipe.sceneId &&
-      composition.searchParams.size === 1,
-    `Composition URL mismatch: ${item.id}`,
-  );
-  assert(
-    checkUrl(item.canonical_url, item, "alosem.com").pathname === `/i/${item.slug}` &&
-      checkUrl(item.source_api, item, "alosem.com").pathname === `/api/images/${item.slug}`,
-    `Canonical URL mismatch: ${item.id}`,
-  );
-  for (const step of item.steps) {
-    assert(step.exact_prompt && step.model, `Missing exact step history: ${item.id}`);
-    checkAlosemSource(step.output.image_url, step.output.id, item);
-    for (const reference of step.references)
-      checkAlosemSource(reference.image_url, reference.id, item);
-  }
-  assert(
-    item.steps.at(-1).exact_prompt === item.exact_prompt &&
-      item.steps.at(-1).model === item.model,
-    `Final exact history mismatch: ${item.id}`,
-  );
-}
-
+assert(schema.$id.startsWith("https://alosem.com/"), "Schema id is not Alosem-owned");
+assert(schema.properties.schema_version.const === 3, "Schema is not version 3");
 assert(
-  schema.$id ===
-    "https://github.com/pixexid/pixexid-prompt-atlas/schema/cases.schema.json",
-  "Unexpected schema id",
+  schema.$defs.campaignCase.properties.kind.const === "campaign-standalone" &&
+    schema.$defs.historicalCase.properties.kind.const === "historical-composition",
+  "Schema case discrimination is missing",
 );
-assert(schema.properties.schema_version.const === 2, "Schema is not version 2");
-assert(catalog.schema_version === 2, "Unsupported schema version");
-assert(Array.isArray(catalog.cases) && catalog.cases.length > 0, "Catalog is empty");
+assert(catalog.schema_version === 3, "Unsupported catalogue version");
+assert(catalog.cases.length === sources.length, "Source/catalogue count mismatch");
+assert(catalog.cases.length === 30, "Expected 30 reviewed campaign cases");
 assert(
-  new Set(catalog.cases.map((item) => item.id)).size === catalog.cases.length,
-  "Duplicate ids",
+  new Set(catalog.cases.map((item) => item.id)).size === catalog.cases.length &&
+    new Set(catalog.cases.map((item) => item.slug)).size === catalog.cases.length,
+  "Duplicate case identity",
 );
 assert(
   catalog.cases.every(
     (item, index) =>
-      index === 0 ||
-      catalog.cases[index - 1].created_at.localeCompare(item.created_at) >= 0,
+      item.slug === sources[index].slug && item.category === sources[index].category,
   ),
-  "Cases are not ordered newest first",
+  "Catalogue does not match the reviewed source list",
+);
+
+for (const item of catalog.cases) validateCase(item);
+
+const counts = Object.fromEntries([...categories].map((key) => [key, 0]));
+for (const item of catalog.cases) counts[item.category] += 1;
+const marker = readme.match(/<!-- category-counts (\{[^\n]+\}) -->/);
+assert(marker, "README category count marker missing");
+assert(
+  JSON.stringify(JSON.parse(marker[1])) === JSON.stringify(counts),
+  "README category counts do not match catalogue",
 );
 assert(
-  readme.includes("AI Image Compositions") &&
-    readme.includes("Multi-Reference AI Composition"),
-  "README positioning missing",
+  readme.startsWith("# GPT Image 2.5 Prompts & Examples — by Alosem") &&
+    readme.includes("Independent community resource. Not affiliated with or endorsed by OpenAI."),
+  "README launch positioning missing",
 );
 
-export function validateCase(item) {
-  assert(item.origin === "pixexid" || item.origin === "alosem", `Invalid origin: ${item.id}`);
-  checkShared(item);
-  if (item.origin === "pixexid") checkPixexid(item);
-  else checkAlosem(item);
+const expectedPages = new Set(catalog.cases.map((item) => item.slug + ".md"));
+const actualPages = new Set(
+  (await readdir(join(root, "cases"))).filter((name) => name.endsWith(".md")),
+);
+assert(
+  expectedPages.size === actualPages.size &&
+    [...expectedPages].every((name) => actualPages.has(name)),
+  "Case pages do not match catalogue",
+);
+for (const item of catalog.cases) {
+  const path = join(root, "cases", item.slug + ".md");
+  await access(path);
+  const page = await readFile(path, "utf8");
+  assert(
+    page.includes(item.image_urls["1024"]) &&
+      page.includes(item.exact_prompt) &&
+      page.includes("[Open in Alosem](" + item.canonical_url + ")") &&
+      page.includes(item.review.notes),
+    "Incomplete case page: " + item.slug,
+  );
 }
 
-for (const item of catalog.cases) {
-  validateCase(item);
-
-  const casePath = join(root, "cases", `${item.slug}.md`);
-  await access(casePath);
-  const casePage = await readFile(casePath, "utf8");
-  for (const [name, page] of [
-    ["README", readme],
-    ["Case", casePage],
-  ]) {
-    let cursor = page.indexOf(`## [${item.title}](cases/${item.slug}.md)`);
-    if (name === "Case") cursor = 0;
-    for (const step of item.steps) {
-      const stepIndex = page.indexOf(`${step.label} — ${step.title}`, cursor);
-      const outputUrl =
-        step.order === item.steps.length ? item.image_url : step.output.image_url;
-      const outputIndex = page.indexOf(`src="${outputUrl}"`, stepIndex);
-      assert(
-        stepIndex >= cursor && outputIndex > stepIndex,
-        `${name} step order is invalid: ${item.id}`,
-      );
-      cursor = outputIndex;
-    }
+const brandPattern = new RegExp(["pix", "exid"].join(""), "i");
+const repoFiles = execFileSync(
+  "git",
+  ["ls-files", "--cached", "--others", "--exclude-standard", "-z"],
+  { cwd: root },
+)
+  .toString()
+  .split("\0")
+  .filter(Boolean);
+for (const path of repoFiles) {
+  let content;
+  try {
+    content = await readFile(join(root, path), "utf8");
+  } catch (error) {
+    if (error.code === "ENOENT" || error.code === "EISDIR") continue;
+    throw error;
   }
+  assert(!brandPattern.test(content), "Disallowed legacy brand reference: " + path);
 }
 
 if (process.argv.includes("--links")) {
-  const links = new Set(
-    catalog.cases.flatMap((item) => [
-      item.canonical_url,
-      item.composition_url,
-      item.image_url,
-      item.source_api,
-      ...item.steps.flatMap((step) => [
-        step.output.image_url,
-        ...step.references.map((reference) => reference.image_url),
+  const links = [
+    ...new Set(
+      catalog.cases.flatMap((item) => [
+        item.canonical_url,
+        item.image_urls["512"],
+        item.image_urls["1024"],
+        item.image_urls.original,
       ]),
-    ]),
-  );
-  const results = await Promise.all(
-    [...links].map(async (url) => [
-      url,
-      await fetch(url, { signal: AbortSignal.timeout(15_000) }),
-    ]),
-  );
-  for (const [url, response] of results) {
-    assert(response.ok, `Broken link ${response.status}: ${url}`);
-    if (
-      url.includes("/api/creative-assets/") ||
-      url.includes("/api/compositions/")
-    )
-      assert(
-        response.headers.get("content-type")?.startsWith("image/"),
-        `Non-image reference: ${url}`,
-      );
+    ),
+  ];
+  for (let offset = 0; offset < links.length; offset += 10) {
+    await Promise.all(
+      links.slice(offset, offset + 10).map(async (url) => {
+        const response = await fetch(url, { signal: AbortSignal.timeout(20_000) });
+        assert(response.ok, "Broken link " + response.status + ": " + url);
+        if (new URL(url).hostname === "pi.alosem.com")
+          assert(
+            response.headers.get("content-type")?.startsWith("image/"),
+            "Non-image asset: " + url,
+          );
+        await response.body?.cancel();
+      }),
+    );
   }
 }
 
 console.log(
-  `Validated ${catalog.cases.length} cases${process.argv.includes("--links") ? " and public links" : ""}.`,
+  "Validated " +
+    catalog.cases.length +
+    " campaign cases" +
+    (process.argv.includes("--links") ? " and public links" : "") +
+    ".",
 );

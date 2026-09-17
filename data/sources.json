@@ -1,32 +1,272 @@
 [
   {
-    "origin": "pixexid",
-    "canonical_url": "https://pixexid.com/i/mara-brings-tavi-to-life-8afa70b8-8ab0-5349-a8b3-8cfa8ff37f6c",
-    "composition_url": "https://pixexid.com/ai-composition/6efb2dae-6c8c-4cfc-b4c6-4f21efd6d3ae",
-    "rights_basis": "Pixexid-admin-owned original AI-generated composition with public source sharing enabled."
+    "slug": "06-minimalist-scooter-village-2f97d52a",
+    "category": "product_visuals",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Brand-free fictional scooter, both wheels and full body inside frame, no readable text/logo/watermark; cobblestone lane, flowering balcony and ochre wall all present. Two minor prompt deviations noted but not defects: mirrors are rounded, not the requested 'rectangular mirrors', and faint embossed emblem-like marks sit on the front shield and left side panel despite the prompt's 'no badge, emblem, medallion' clause. Neither is readable branding."
+    }
   },
   {
-    "origin": "pixexid",
-    "canonical_url": "https://pixexid.com/i/dev-laughing-in-the-greenhouse-03d91188-a399-5cff-a679-76036c37a3db",
-    "composition_url": "https://pixexid.com/ai-composition/c5fa9811-5b24-4bf1-b4a4-ef28506cd382",
-    "rights_basis": "Pixexid-admin-owned original AI-generated composition using a fictional character."
+    "slug": "mint-concept-motorcycle-in-a-dark-garage-8b5688cf",
+    "category": "product_visuals",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Fully framed mint concept bike, coherent tires, discs, forks, fairing and grounded reflection. Fairing panels are blank and unbadged as required; faint unreadable embossing appears only on the rear hub cover, which is not a fairing panel. Single-sided rear hub with radial struts reads as a deliberate concept design, not a missing swingarm."
+    }
   },
   {
-    "origin": "pixexid",
-    "canonical_url": "https://pixexid.com/i/dev-on-the-rainwashed-boardwalk-2d33ce3c-a2b4-5f94-a4f7-690c7471c9b7",
-    "composition_url": "https://pixexid.com/ai-composition/c5fa9811-5b24-4bf1-b4a4-ef28506cd382",
-    "rights_basis": "Pixexid-admin-owned original AI-generated composition using a fictional character."
+    "slug": "chrome-watering-can-pours-a-silver-arc-579c8330",
+    "category": "product_visuals",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Hand grip verified at 1024px: four curled fingers plus a thumb with a visible nail wrapping the arched handle - no extra or missing digit. One integrated handle, one tapering spout, one continuous stream landing in the soil beside the poppy stem. Chrome surfaces plain and unmarked; sky/horizon reflections continuous across body and spout. Agrees with the original reviewer."
+    }
   },
   {
-    "origin": "pixexid",
-    "canonical_url": "https://pixexid.com/i/dev-builds-a-folded-paper-form-ac4ae603-d1fa-547c-ae4c-db37eb39eb77",
-    "composition_url": "https://pixexid.com/ai-composition/c5fa9811-5b24-4bf1-b4a4-ef28506cd382",
-    "rights_basis": "Pixexid-admin-owned original AI-generated composition using a fictional character."
+    "slug": "glow-retro-poster-of-a-bass-player-and-boy-6b2eb59a",
+    "category": "posters_typography",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Letter-by-letter against the prompt's 'the word GLOW spans the full width in enormous flat red display letters, cropped by the canvas edges': G-L-O-W, left to right, four glyphs, no substitution, duplication, omission or extra word. Edge cropping of the G and the display type is explicitly requested, not a defect. Tall man in long black coat with double-bass case, small boy with green paper lantern on a short pole, both walking left to right, man's head into the lettering zone, red disc low right, dark city silhouettes and one green leaf shape at the bottom corners - all delivered. No gibberish text anywhere else."
+    }
   },
   {
-    "origin": "pixexid",
-    "canonical_url": "https://pixexid.com/i/inez-begins-the-morning-ritual-092dc26f-779a-5d11-a834-c874e0cbefac",
-    "composition_url": "https://pixexid.com/ai-composition/d49857c8-e595-4f0d-8911-da7f864d02d1",
-    "rights_basis": "Pixexid-admin-owned original AI-generated composition using a fictional persona and Pixexid-owned Verdessa brand assets."
+    "slug": "pressed-flower-wren-on-twig-slice-4712aff7",
+    "category": "transparent_assets",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "REAL ALPHA verified programmatically at 1024x576: p(0,0)=srgba(0,0,0,0); all four corners and midpoints alpha=0; max alpha on every border row/column = 0/255, so nothing is clipped. Opaque fraction 0.254; content bbox 965x538+28+23 leaves margin on all sides. No drawn checkerboard anywhere. Wren has coherent beak, eye, feet gripping the twig, tail; petals and leaf veins readable. No text or watermark."
+    }
+  },
+  {
+    "slug": "iron-dragonfly-on-reeds-slice-2900cbdd",
+    "category": "transparent_assets",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "REAL ALPHA verified at 1024x576: p(0,0)=srgba(0,0,0,0), all corners 0, border max alpha 0/255 on all four edges. Opaque fraction 0.183; bbox 963x554+31+11. Four separated wings, segmented abdomen, legs attached to the forged stem. Free-floating leaf and ball fragments are consistent with the scattered-fragment prompt language. Nothing clipped."
+    }
+  },
+  {
+    "slug": "punched-tin-sun-medallion-slice-946dfa40",
+    "category": "transparent_assets",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "REAL ALPHA verified at 1024x1024: p(0,0)=srgba(0,0,0,0); bottom-left reads srgba(0,0,0,0.00392157) (alpha 1/255, effectively transparent); border max alpha 0-1/255. Opaque fraction 0.479. Centred face is symmetric for the folk-art idiom, concentric punched rings, rays, ribbons, stars and hanging beads all contained. No text or signature."
+    }
+  },
+  {
+    "slug": "spring-ridge-walk-leaf-collage-slice-1d5e0d44",
+    "category": "transparent_assets",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "REAL ALPHA verified at 576x1024: p(0,0)=srgba(0,0,0,0), all corners 0, border max alpha 0-1/255. Opaque fraction 0.465; bbox 568x977+0+12. Layered leaf-collage ridges, two ink walkers, one flowering tree, mist and coral sun on cream paper. Nothing clipped, no text."
+    }
+  },
+  {
+    "slug": "quilled-blossom-branch-with-birds-7cd0690d",
+    "category": "transparent_assets",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "REAL ALPHA verified at 1024x1024: p(0,0)=srgba(0,0,0,0); border max alpha 0-1/255. Opaque fraction 0.261; bbox 998x1007+0+17. Two anatomically coherent quilled birds on one blossom branch; coiled paper petals, leaves and tendrils legible. No detached artifact, text or watermark."
+    }
+  },
+  {
+    "slug": "cub-sending-off-a-paper-boat-d16dc431",
+    "category": "illustration_backgrounds",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Correctly classified as illustration_backgrounds, not transparent_assets: the prompt asks for the slice on a flat pale-blush surface and the file has no alpha channel, matching hasTransparency=false. Cub, red paper boat, ripple trail, feathered gouache rim and flat uniform blush field to all four borders are as prompted. Hindquarters dissolving into foliage is the stated gouache-dissolve effect."
+    }
+  },
+  {
+    "slug": "paper-boats-carrying-small-planets-fae5026b",
+    "category": "illustration_backgrounds",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Exactly three cream paper boats, each with clear dark margin and none cropped. Cargo matches the prompt precisely: one rose-gold ringed planet, one pale gold banded planet, one lavender-grey moon. NOTE - the original review note says 'each carrying one differently colored ringed planet', which is inaccurate; only one carries a ring. The image is correct, the note is not."
+    }
+  },
+  {
+    "slug": "small-storm-spirit-brewing-tea-99225b4c",
+    "category": "illustration_backgrounds",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Verified at 1024px that the loop actually closes: steam rises from the cup on the right and the rain streaks pass the face and land visibly in the tea, satisfying 'a thin rain falls from that cloud neatly back into the same cup'. Both mitten hands hold the cup, two feet, faint oval shadow, generous margin, nothing touches the frame edges. No text."
+    }
+  },
+  {
+    "slug": "glass-whale-carrying-light-fish-a539a581",
+    "category": "illustration_backgrounds",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Complete glass whale with readable head, eye, ridged throat, lifted fluke and two pectoral fins - the long knobbed lower-left form is the far pectoral, not a stray limb. Luminous fish visible inside the refracting body; caustic bands and frosted bloom near the tail as prompted. No clipping, lettering, watermark or second whale."
+    }
+  },
+  {
+    "slug": "forest-giant-waits-for-the-last-bus-658fea7d",
+    "category": "illustration_backgrounds",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Dense but legible narrative background; four characters, snow, lamp pool, approaching bus headlights on the left, giant kneeling with a blank ticket between two fingers. Two prompt-count notes where I disagree with the original reviewer: I can verify only three clear arms and roughly five bags on the grandmother, not 'four arms, one shopping bag per arm', and the tiny creature stands beside the rail rather than 'gripping the rail with both mittens'. Neither is an anatomy break - no limb is detached or malformed - so this does not disqualify the case."
+    }
+  },
+  {
+    "slug": "radio-telescope-inside-a-paper-spiral-5279e774",
+    "category": "illustration_backgrounds",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Exactly one rust-red telescope on the left third, dish tilted toward the crescent on the upper right, fully separated from every torn edge, legs planted on the salt crust, complete dish silhouette. Silver track curves from the base and continues into the spiral tear; crescent reflected once in a pool. Paper, panels and horizon all blank. No text."
+    }
+  },
+  {
+    "slug": "paper-city-living-canopy-55f0fc0d",
+    "category": "illustration_backgrounds",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Exactly three tall planted towers - no random extra tower - with one elevated pedestrian bridge, rooftop gardens, hanging vines and a clear vertical garden corridor from foreground parks to the distance. Torn paper layers and cut edges throughout, metallic interfaces kept secondary. No text, logo or watermark."
+    }
+  },
+  {
+    "slug": "mapmaker-unfolding-a-city-e9f8e7a1",
+    "category": "illustration_backgrounds",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Both hands verified at 1024px: the left hand shows four curled fingers over the map edge with the thumb occluded, the right hand shows a thumb and three to four fingers pinching the corner - painterly but anatomically plausible, no extra or fused digits. The map's torn upper edge continues into a sparse skyline attached to the paper rather than floating. No words, labels or typography on the map."
+    }
+  },
+  {
+    "slug": "silk-thread-river-5e0f485f",
+    "category": "illustration_backgrounds",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Thread continuity verified: one vermilion thread runs unbroken from the needle, down through the hoop, into the winding river and out onto the cloth below. Exactly three tiny indigo boats resting on the river surface. Hoop holds pale reeds and distant blue hills; robe is dense floral stitch work. No words, letters or typography anywhere."
+    }
+  },
+  {
+    "slug": "paper-light-box-village-at-dusk-db4a7a9e",
+    "category": "illustration_backgrounds",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Framed papercraft light-box with receding cream ridge layers, carved window openings, village gate, bridges, a paper river to the front layer, one round lantern strung between two paper pines, and the sitting-cat silhouette in a single lit window. No people, no writing. Ridge layers overlap too closely to count six with certainty, as the original reviewer also noted."
+    }
+  },
+  {
+    "slug": "red-crosshatch-portrait-of-an-old-astronomer-fca9cc5e",
+    "category": "illustration_backgrounds",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Checked the ruler border at high magnification for stray glyphs: pure tick marks and corner star symbols, zero numerals or lettering, matching 'no writing or lettering anywhere'. Both eyes are coherent under the hatching. Spectacles sit pushed up on the forehead exactly as prompted, so the unusual first read is requested, not a defect. Gold star accent near the collar present."
+    }
+  },
+  {
+    "slug": "torn-paper-swimmer-mid-dive-a960b5d6",
+    "category": "illustration_backgrounds",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Single swimmer, cap, goggles, arched diagonal from fingertips upper-left to toes lower-right, blue paper ribbon, confetti splash flecks, teal torn water. NOTE - the original review note claims 'no frame clipping', but the starting block is cropped by the right edge; no prompt clause forbids it, so this is a note, not a defect. The prompt's own 'hands just breaking the water surface' is unsatisfiable given its stated diagonal, and the model's reading is reasonable."
+    }
+  },
+  {
+    "slug": "felted-fox-asleep-on-a-wool-cloud-8c8d1e4b",
+    "category": "illustration_backgrounds",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Matches the prompt item by item: curled fox with cream chest and tail tip over its nose, palm-sized wool cloud, one golden crescent with exactly two felt stars - one dusk blue, one moss green - spaced well apart, a single loose fibre catching light on the fox's back, soft light from the upper left, faint shadow beneath the cloud. Hanging threads leaving the top edge are consistent with the prompted nursery-mobile framing."
+    }
+  },
+  {
+    "slug": "analyst-facing-a-mountain-of-postponed-letters-c9d145b5",
+    "category": "illustration_backgrounds",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Exactly two islands of meaning plus one crow on the bare floor between them, as prompted. Analyst in a gray sweater under a single warm lamp cone, pen over unsent letters; envelope drifts at the left with edges catching the lamp spill; the teal void is perfectly smooth. The envelope mound meeting the left edge is not prohibited by the prompt. No readable stray text."
+    }
+  },
+  {
+    "slug": "rust-seam-splitting-a-gray-painted-face-7cabb9a6",
+    "category": "illustration_backgrounds",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Face anatomically coherent beneath the cracked gray impasto with both eyes open and gazing past the viewer. One continuous rust seam runs crown to chest without breaking. Rope braids hang at both frame edges, ochre brushstroke backdrop behind. Reads as material, not wound. No text, watermark or signature."
+    }
+  },
+  {
+    "slug": "copper-heron-machine-hunting-in-flooded-terraces-7fff6a56",
+    "category": "illustration_backgrounds",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Verified at 1024px: exactly two separated jointed strut-legs, both planted with spreading rings - no third strut. Folded narrow sensor wings, long neck with sensor crest swept low over the water, twin ribbon antennae trailing behind the crown, broken reflection, egret footprints on the mud ridge. Critically, the prompt forbids 'words, labels or legend numbers anywhere' and I found none; rivet and circuit marks are decorative only."
+    }
+  },
+  {
+    "slug": "goldfish-swims-beneath-a-broken-moon-reflection-e7df7e9a",
+    "category": "illustration_backgrounds",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "One vermilion goldfish, entirely submerged, travelling toward the upper left with the rounded back and top of the head visible from directly overhead, two sideways pectoral fins and one flowing split tail to the lower right. Pale ripple bands pass across the back and tail, correctly placing the surface in front of the fish; one short ivory reflection strip overlaps the tail. Whole fish inside the frame with unlettered cream margins. No second fish."
+    }
+  },
+  {
+    "slug": "ancient-sword-bridges-a-canyon-of-pages-0a39debe",
+    "category": "illustration_backgrounds",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "Both support contacts are visible as required: the grip and gold crossguard rest on the lower-left page bank and the blade near its point rests on the upper-right bank. Continuous straight blade with a fuller catching one line of warm light; carved terraced page cliffs, stair, gold gutter ribbon, leather cover and tabletop all coherent. Page surfaces blank, no watermark."
+    }
+  },
+  {
+    "slug": "cream-terminal-that-never-existed-b3d4a9d3",
+    "category": "product_visuals",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "The canonical page returned HTTP 200 and its title matched. At 1024px this is a clean three-quarter studio shot of a fictional cream-enamel terminal on warm umber seamless: the CRT carries an abstract aurora gradient with no icons or text, both key banks are legend-free, no watermarks, badges, or markings appear, and a soft reflection grounds the console. Zero defects were found."
+    }
+  },
+  {
+    "slug": "canal-bridge-screenprint-slice-1919a777",
+    "category": "transparent_assets",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "ALTERNATE rank 1. REAL ALPHA verified at 1024x576: p(0,0)=srgba(0,0,0,0); border max alpha 0-1/255 (stray sub-threshold dust only, not a background). Four inks plus cream paper, coarse halftone, deliberate misregistration, arched brick bridge, moored boat at a post, striped awnings, yellow dot window lights, and stray dots scattering into the transparency exactly as prompted. Best transparent alternate; promotable."
+    }
+  },
+  {
+    "slug": "girl-holding-a-fallen-moon-in-a-tidal-pool-65b8e726",
+    "category": "illustration_backgrounds",
+    "review": {
+      "checked": "2026-09-17",
+      "verdict": "pass",
+      "notes": "ALTERNATE rank 8, illustration_backgrounds. Photoreal night beach: girl crouched with both hands cupping a glowing moon sphere half-submerged in a tidal pool, lighthouse beam, crabs, feather. Both hands and both arms read correctly, face coherent, crouch pose plausible, no stray limb or text. Strongest like-for-like replacement for a photoreal case. Promotable (first choice)."
+    }
   }
 ]
