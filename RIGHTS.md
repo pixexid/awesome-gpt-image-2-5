@@ -4,7 +4,7 @@ Copyright © 2026 Alosem.
 
 The human-readable case pages under `cases/` and structured catalogue files under `data/` are licensed under [Creative Commons Attribution 4.0 International](LICENSE).
 
-Case images hosted under `assets/` are preview copies of Alosem team-generated campaign work and are relicensed with the catalogue under CC BY 4.0; the founder-provided reference sheets used to produce those cases are not included in this repository. Provenance labels are applied honestly: **Curated on Alosem** for externally published work, **Made with Alosem** for work created through an Alosem creative workflow, and **Created for Alosem** for team-generated campaign cases.
+Case images hosted under `assets/` are preview copies of Alosem team-generated campaign work and are relicensed with the catalogue under CC BY 4.0; the founder-provided reference sheets used to produce those cases are published under `assets/references/` for comparison and are relicensed with the catalogue under CC BY 4.0. Provenance labels are applied honestly: **Curated on Alosem** for externally published work, **Made with Alosem** for work created through an Alosem creative workflow, and **Created for Alosem** for team-generated campaign cases.
 
 Attribute reused catalogue material as “GPT Image 2.5 Prompts & Examples — by Alosem,” link to [this repository](README.md), and identify modifications when applicable.
 

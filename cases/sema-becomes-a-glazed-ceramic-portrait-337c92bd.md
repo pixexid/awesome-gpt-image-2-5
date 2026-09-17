@@ -14,16 +14,19 @@ A studio hero photograph of Sema reimagined as a handcrafted glazed ceramic wall
 
 ## Reference-based run recipe
 
-This case was generated from founder-provided reference sheets rather than from text alone. Those sheets are required image inputs to reproduce the run, they are not included in this repository, and the standalone prompt above remains the public copyable prompt.
+This case was generated from founder-provided reference sheets rather than from text alone. The sheets are required image inputs to reproduce the run; each is published below and under `assets/references/` so the result can be compared with its references, and the standalone prompt above remains the public copyable prompt.
 
 **Ordered references**
 
-1. `sema-directions-v2-review.png` — Primary Sema silhouette, angle, bob geometry, hair-sweep, face-inset, line-placement, and palette anchor
+1. `assets/references/sema-directions-sheet.png` — Primary Sema silhouette, angle, bob geometry, hair-sweep, face-inset, line-placement, and palette anchor
    - SHA-256 `e1d800ae146552a6818e7a4f56ed3b63302a387df3295062dcb4cf79e2c2c786`
    - Founder-supplied raster review sheet; upstream model provenance unavailable.
-2. `sema-reactions-v2-review.png` — Primary Sema eye, lash, mouth, expression-language, and accent anchor
+2. `assets/references/sema-reactions-sheet.png` — Primary Sema eye, lash, mouth, expression-language, and accent anchor
    - SHA-256 `7bac316938369e9fae96a10d4e6b864843280f9ce8ceb580b63c7c3b462ed717`
    - Founder-supplied raster review sheet; upstream model provenance unavailable.
+
+<p align="center"><a href="../assets/references/sema-directions-sheet.png"><img src="../assets/references/sema-directions-sheet.png" alt="Reference sheet: Primary Sema silhouette, angle, bob geometry, hair-sweep, face-inset, line-placement, and palette anchor" width="420"></a></p>
+<p align="center"><a href="../assets/references/sema-reactions-sheet.png"><img src="../assets/references/sema-reactions-sheet.png" alt="Reference sheet: Primary Sema eye, lash, mouth, expression-language, and accent anchor" width="420"></a></p>
 
 **Exact execution prompt**
 

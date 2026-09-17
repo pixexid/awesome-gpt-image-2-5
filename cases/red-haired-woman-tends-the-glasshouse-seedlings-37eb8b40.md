@@ -14,13 +14,15 @@ A natural photorealistic portrait of a freckled red-haired, green-hazel-eyed you
 
 ## Reference-based run recipe
 
-This case was generated from founder-provided reference sheets rather than from text alone. Those sheets are required image inputs to reproduce the run, they are not included in this repository, and the standalone prompt above remains the public copyable prompt.
+This case was generated from founder-provided reference sheets rather than from text alone. The sheets are required image inputs to reproduce the run; each is published below and under `assets/references/` so the result can be compared with its references, and the standalone prompt above remains the public copyable prompt.
 
 **Ordered references**
 
-1. `8b52a152-8365-563d-abf2-757dcbae8517.jpeg` — Sole red-haired-female identity anchor; long heart-oval face geometry, green-hazel eyes, freckles, tall loose bun mass, slim long-limbed athletic proportions, expressions, and hand anatomy
+1. `assets/references/red-haired-female-identity-sheet.jpeg` — Sole red-haired-female identity anchor; long heart-oval face geometry, green-hazel eyes, freckles, tall loose bun mass, slim long-limbed athletic proportions, expressions, and hand anatomy
    - SHA-256 `f24f5626683be71903e209ddbd71653f67bd0ea0dfcdc302126a05bb170d5ae3`
    - Founder-supplied identity sheet; founder-stated GPT Image 2.5 output.
+
+<p align="center"><a href="../assets/references/red-haired-female-identity-sheet.jpeg"><img src="../assets/references/red-haired-female-identity-sheet.jpeg" alt="Reference sheet: Sole red-haired-female identity anchor; long heart-oval face geometry, green-hazel eyes, freckles, tall loose bun mass, slim long-limbed athletic proportions, expressions, and hand anatomy" width="420"></a></p>
 
 **Exact execution prompt**
 

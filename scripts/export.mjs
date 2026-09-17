@@ -209,13 +209,26 @@ export function teamCaseMarkdown(item) {
         index +
         1 +
         ". `" +
-        reference.file +
+        (reference.path || reference.file) +
         "` — " +
         reference.role +
         "\n   - SHA-256 `" +
         reference.sha256 +
         "`\n   - " +
         reference.provenance,
+    )
+    .join("\n");
+  const referenceEmbeds = item.references
+    .filter((reference) => reference.path)
+    .map(
+      (reference) =>
+        '<p align="center"><a href="../' +
+        reference.path +
+        '"><img src="../' +
+        reference.path +
+        '" alt="Reference sheet: ' +
+        escapeHtml(reference.role) +
+        '" width="420"></a></p>',
     )
     .join("\n");
   return (
@@ -235,10 +248,11 @@ export function teamCaseMarkdown(item) {
     item.exact_prompt +
     "\n```\n\n" +
     "## Reference-based run recipe\n\n" +
-    "This case was generated from founder-provided reference sheets rather than from text alone. Those sheets are required image inputs to reproduce the run, they are not included in this repository, and the standalone prompt above remains the public copyable prompt.\n\n" +
+    "This case was generated from founder-provided reference sheets rather than from text alone. The sheets are required image inputs to reproduce the run; each is published below and under `assets/references/` so the result can be compared with its references, and the standalone prompt above remains the public copyable prompt.\n\n" +
     "**Ordered references**\n\n" +
     references +
     "\n\n" +
+    (referenceEmbeds ? referenceEmbeds + "\n\n" : "") +
     "**Exact execution prompt**\n\n" +
     "```text\n" +
     item.execution_prompt +

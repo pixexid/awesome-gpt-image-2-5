@@ -311,7 +311,8 @@
           "file": "ChatGPT Image Sep 12, 2026, 12_57_55 PM (1).png",
           "role": "Sole blond-male identity anchor; face geometry, brown eyes, light stubble, swept-wavy hair mass, athletic body proportions, expressions, and hand anatomy",
           "sha256": "bfaa509e0492c7496dceaa14486a552029262e01e39407411cfbb07003c74523",
-          "provenance": "Founder-supplied identity sheet; founder-stated GPT Image 2.5 output."
+          "provenance": "Founder-supplied identity sheet; founder-stated GPT Image 2.5 output.",
+          "path": "assets/references/blond-male-identity-sheet.png"
         }
       ],
       "preview": {
@@ -366,7 +367,8 @@
           "file": "ChatGPT Image Sep 12, 2026, 12_57_55 PM (1).png",
           "role": "Sole blond-male identity anchor; face geometry, brown eyes, light stubble, swept-wavy hair mass, athletic body proportions, expressions, and hand anatomy",
           "sha256": "bfaa509e0492c7496dceaa14486a552029262e01e39407411cfbb07003c74523",
-          "provenance": "Founder-supplied identity sheet; founder-stated GPT Image 2.5 output."
+          "provenance": "Founder-supplied identity sheet; founder-stated GPT Image 2.5 output.",
+          "path": "assets/references/blond-male-identity-sheet.png"
         }
       ],
       "preview": {
@@ -421,7 +423,8 @@
           "file": "ChatGPT Image Sep 12, 2026, 12_57_55 PM (2).png",
           "role": "Sole blond-female identity anchor; heart-oval face geometry, brown eyes, rounded chin-length bob mass, compact athletic-hourglass body proportions, expressions, and hand anatomy",
           "sha256": "ac592b95c4ee8e75b0c64e522039823e51f9823bac3de5cc8c93c8d54c3c7b85",
-          "provenance": "Founder-supplied identity sheet; founder-stated GPT Image 2.5 output."
+          "provenance": "Founder-supplied identity sheet; founder-stated GPT Image 2.5 output.",
+          "path": "assets/references/blond-female-identity-sheet.png"
         }
       ],
       "preview": {
@@ -477,7 +480,8 @@
           "file": "8b52a152-8365-563d-abf2-757dcbae8517.jpeg",
           "role": "Sole red-haired-female identity anchor; long heart-oval face geometry, green-hazel eyes, freckles, tall loose bun mass, slim long-limbed athletic proportions, expressions, and hand anatomy",
           "sha256": "f24f5626683be71903e209ddbd71653f67bd0ea0dfcdc302126a05bb170d5ae3",
-          "provenance": "Founder-supplied identity sheet; founder-stated GPT Image 2.5 output."
+          "provenance": "Founder-supplied identity sheet; founder-stated GPT Image 2.5 output.",
+          "path": "assets/references/red-haired-female-identity-sheet.jpeg"
         }
       ],
       "preview": {
@@ -533,7 +537,8 @@
           "file": "ChatGPT Image Sep 13, 2026, 10_34_09 PM.png",
           "role": "Sole merle French bulldog identity anchor; square head, wide-set bat ears, short muzzle, pale eyes, merle pattern language, cobby body proportions, and paw anatomy",
           "sha256": "dbccf357892830cd1c717d6cc69a863c58547d0c7017ec7fe6afc0256b9332c9",
-          "provenance": "Founder-supplied identity sheet; founder-stated GPT Image 2.5 output."
+          "provenance": "Founder-supplied identity sheet; founder-stated GPT Image 2.5 output.",
+          "path": "assets/references/merle-bulldog-identity-sheet.png"
         }
       ],
       "preview": {
@@ -588,13 +593,15 @@
           "file": "sema-directions-v2-review.png",
           "role": "Primary Sema silhouette, angle, bob geometry, hair-sweep, face-inset, line-placement, and palette anchor",
           "sha256": "e1d800ae146552a6818e7a4f56ed3b63302a387df3295062dcb4cf79e2c2c786",
-          "provenance": "Founder-supplied raster review sheet; upstream model provenance unavailable."
+          "provenance": "Founder-supplied raster review sheet; upstream model provenance unavailable.",
+          "path": "assets/references/sema-directions-sheet.png"
         },
         {
           "file": "sema-reactions-v2-review.png",
           "role": "Primary Sema eye, lash, mouth, expression-language, and accent anchor",
           "sha256": "7bac316938369e9fae96a10d4e6b864843280f9ce8ceb580b63c7c3b462ed717",
-          "provenance": "Founder-supplied raster review sheet; upstream model provenance unavailable."
+          "provenance": "Founder-supplied raster review sheet; upstream model provenance unavailable.",
+          "path": "assets/references/sema-reactions-sheet.png"
         }
       ],
       "preview": {
@@ -651,13 +658,15 @@
           "file": "sema-directions-v2-review.png",
           "role": "Primary Sema silhouette, angle, bob geometry, hair-sweep, face-inset, line-placement, and palette anchor",
           "sha256": "e1d800ae146552a6818e7a4f56ed3b63302a387df3295062dcb4cf79e2c2c786",
-          "provenance": "Founder-supplied raster review sheet; upstream model provenance unavailable."
+          "provenance": "Founder-supplied raster review sheet; upstream model provenance unavailable.",
+          "path": "assets/references/sema-directions-sheet.png"
         },
         {
           "file": "sema-reactions-v2-review.png",
           "role": "Primary Sema eye, lash, mouth, expression-language, and accent anchor",
           "sha256": "7bac316938369e9fae96a10d4e6b864843280f9ce8ceb580b63c7c3b462ed717",
-          "provenance": "Founder-supplied raster review sheet; upstream model provenance unavailable."
+          "provenance": "Founder-supplied raster review sheet; upstream model provenance unavailable.",
+          "path": "assets/references/sema-reactions-sheet.png"
         }
       ],
       "preview": {

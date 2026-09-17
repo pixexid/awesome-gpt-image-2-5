@@ -14,13 +14,15 @@ A photorealistic editorial photograph of a blond, brown-eyed young man with ligh
 
 ## Reference-based run recipe
 
-This case was generated from founder-provided reference sheets rather than from text alone. Those sheets are required image inputs to reproduce the run, they are not included in this repository, and the standalone prompt above remains the public copyable prompt.
+This case was generated from founder-provided reference sheets rather than from text alone. The sheets are required image inputs to reproduce the run; each is published below and under `assets/references/` so the result can be compared with its references, and the standalone prompt above remains the public copyable prompt.
 
 **Ordered references**
 
-1. `ChatGPT Image Sep 12, 2026, 12_57_55 PM (1).png` — Sole blond-male identity anchor; face geometry, brown eyes, light stubble, swept-wavy hair mass, athletic body proportions, expressions, and hand anatomy
+1. `assets/references/blond-male-identity-sheet.png` — Sole blond-male identity anchor; face geometry, brown eyes, light stubble, swept-wavy hair mass, athletic body proportions, expressions, and hand anatomy
    - SHA-256 `bfaa509e0492c7496dceaa14486a552029262e01e39407411cfbb07003c74523`
    - Founder-supplied identity sheet; founder-stated GPT Image 2.5 output.
+
+<p align="center"><a href="../assets/references/blond-male-identity-sheet.png"><img src="../assets/references/blond-male-identity-sheet.png" alt="Reference sheet: Sole blond-male identity anchor; face geometry, brown eyes, light stubble, swept-wavy hair mass, athletic body proportions, expressions, and hand anatomy" width="420"></a></p>
 
 **Exact execution prompt**
 
